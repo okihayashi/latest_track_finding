@@ -19,22 +19,18 @@ int main(int argc, char** argv){
     gStyle->SetPadGridX(1);
     gStyle->SetPadGridY(1);
 
-    TFile* file = new TFile("../Data/signal.140905M02.noise-2.root");
+    TFile* file = new TFile("../../Data/signal.140905M02.noise-2.root");
     TTree* t = (TTree*)file->Get("tree");
 
     TCanvas* c1 = new TCanvas("c1","c1",10,10,800,800);
 
     int CDCcell_nHits;
-    vector<double>* CDCcell_wx = 0;
-    vector<double>* CDCcell_wy = 0;
     vector<double>* CDCcell_edep = 0;
     vector<double>* CDCcell_layerID = 0;
     vector<double>* CDCcell_cellID = 0;
     vector<int>*    CDCcell_hittype = 0;
 
     t->SetBranchAddress("CdcCell_nHits",&CDCcell_nHits); 
-    t->SetBranchAddress("CdcCell_wx",&CDCcell_wx);
-    t->SetBranchAddress("CdcCell_wy",&CDCcell_wy);
     t->SetBranchAddress("CdcCell_edep",&CDCcell_edep);
     t->SetBranchAddress("CdcCell_layerID",&CDCcell_layerID);
     t->SetBranchAddress("CdcCell_cellID",&CDCcell_cellID);
@@ -42,10 +38,8 @@ int main(int argc, char** argv){
 
     //for(int k=0;k<1000;k++){
     for(int k=0;k<1;k++){
-        t->GetEntry(3);
+        t->GetEntry(10);
 
-	//vector<double> CDCcell_wx_cut;
-	//vector<double> CDCcell_wy_cut;
         vector<double> CDCcell_x;
         vector<double> CDCcell_y;
         vector<double> CDCcell_signalhits_x;
@@ -61,7 +55,7 @@ int main(int argc, char** argv){
 		CDCcell_x.push_back(x0);
 	        CDCcell_y.push_back(y0);
 	    }
-	    if(CDCcell_hittype->at(i) == 2){
+	    if(CDCcell_hittype->at(i) == 0){
 		double x_signal;
 		double y_signal;
                 Wirepos0(CDCcell_layerID->at(i),CDCcell_cellID->at(i),&x_signal,&y_signal);

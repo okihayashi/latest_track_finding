@@ -1,5 +1,5 @@
-TARGETS=TrackFinding
-SRCS = TrackFinding.cc LayerInf140328.cc Wirepos0.cc NeuralNet.cc Density_Cut.cc
+TARGETS=rearrange
+SRCS = rearrange.cc
 OBJS = $(SRCS:.cc=.o)
 
 ROOTFLAGS = $(shell root-config --cflags)
