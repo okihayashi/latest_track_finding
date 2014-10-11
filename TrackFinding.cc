@@ -74,6 +74,7 @@ int main(int argc, char** argv){
 	    cout << "---This event do not have any signals---" << endl;
 	}
 	if(check_event>=10){
+	    
 	    vector<double> CDCcell_layerID_cut;
             vector<double> CDCcell_cellID_cut;
 	    vector<double> CDCcell_hittype_cut;
@@ -102,7 +103,6 @@ int main(int argc, char** argv){
 	    vector<double> y_sig;              //--* y-coordinate of hit wire by signal 
 	    vector<double> x_bg;               //--* x-coordinate of hit wire by noise 
 	    vector<double> y_bg;               //--* x-coordinate of hit wire by noise 
-	    double x01, y01, x02, y02, x03, y03, x04, y04; 
 	    
 	    int count = 0;  
             int count2 = 0; 
@@ -129,6 +129,7 @@ int main(int argc, char** argv){
 		   
 		    //--- cells (upper)
 		    for(int j=0;j<N[i];j++){
+			double x01, y01;
 			Wirepos0(CDCcell_layerID_cut.at(index+j), CDCcell_cellID_cut.at(index+j), &x01, &y01);
 			
 			if(i == 17){
@@ -149,6 +150,7 @@ int main(int argc, char** argv){
 
 			//--- cells (lower)
 			for(int k=0;k<N[i-1];k++){
+			    double x03, y03;
 			    Wirepos0(CDCcell_layerID_cut.at(index-N[i-1]+k), CDCcell_cellID_cut.at(index-N[i-1]+k), &x03, &y03);
 
 			    if(check[k] == 0){
@@ -230,7 +232,7 @@ int main(int argc, char** argv){
 		    }
 		}
 	    }
-	    
+	    cout << "x_sig.size() = " << x_sig.size() << endl;
             //--------------------------------------------------------------------------------------------------------------//
 
 	    //--- apply neural network and density cut ---------------------------------------------------------------------//
@@ -241,7 +243,7 @@ int main(int argc, char** argv){
 	    vector<double> signalNN_Y_2;       //--* y-coordinate of hits selected by 2nd neural network(not use now)  
 	   
             //---NN Parameter is {NOfStep, lambda, a, b, alpha, beta, C, T, V_ij_threshold, distance_cut, angle_cut}
-            NNParameter param1 = {500000, 2., 1., 1., 10., 0., 10., 5., 0.9, 7., 0.1};
+            NNParameter param1 = {500000, 2., 1., 1., 10., 0., 10., 5., 0.8, 7., 0.1};
             NeuralNet(&x_02, &y_02, &signalNN_X, &signalNN_Y, &param1);
             
             vector<double> signalNN_X_cut;     //--* x-coordinate of hits path through the density cut
@@ -394,7 +396,7 @@ int main(int argc, char** argv){
             TGraph* gsigNN = new TGraph(x_02.size(), &x_02[0], &y_02[0]);   
 	    gsigNN->Draw("ap");                                                          
             gsigNN->SetMarkerStyle(4);                                                       
-            gsigNN->SetMarkerSize(0.5);                                                      
+            gsigNN->SetMarkerSize(0.3);                                                      
             gsigNN->SetMarkerColor(4);                                                       
 	    //gsigNN->SetTitle("after 1st NN");
             gsigNN->SetTitle(0);
@@ -415,7 +417,7 @@ int main(int argc, char** argv){
 	    TGraph* gsig = new TGraph(x_sig.size(), &x_sig[0], &y_sig[0]);  
 	    gsig->Draw("ap");                                           
 	    gsig->SetMarkerStyle(4);                                        
-	    gsig->SetMarkerSize(0.5);                                       
+	    gsig->SetMarkerSize(0.3);                                       
 	    gsig->SetMarkerColor(6);                                        
 	    //gsig->SetTitle("noise 9%");
 	    gsig->SetTitle(0);
@@ -428,7 +430,7 @@ int main(int argc, char** argv){
 	    TGraph* gbg = new TGraph(x_bg.size(), &x_bg[0], &y_bg[0]);      
 	    gbg->Draw("p,same");                                            
 	    gbg->SetMarkerStyle(4);                                         
-	    gbg->SetMarkerSize(0.5);                                        
+	    gbg->SetMarkerSize(0.3);                                        
 	    gbg->SetMarkerColor(4);                                         
 
 
@@ -436,7 +438,7 @@ int main(int argc, char** argv){
 	    TGraph* gsigNN2 = new TGraph(signalNN_X.size(), &signalNN_X[0], &signalNN_Y[0]);   
 	    gsigNN2->Draw("ap");                                                                 
 	    gsigNN2->SetMarkerStyle(4);                                                              
-	    gsigNN2->SetMarkerSize(0.5);                                                             
+	    gsigNN2->SetMarkerSize(0.3);                                                             
 	    gsigNN2->SetMarkerColor(4);                                                              
 	    gsigNN2->SetTitle("after NN");
 	    gsigNN2->GetXaxis()->SetTitle("X [cm]");  
@@ -450,7 +452,7 @@ int main(int argc, char** argv){
             TGraph* gsigNN_cut = new TGraph(signalNN_X_cut.size(), &signalNN_X_cut[0], &signalNN_Y_cut[0]);    
             gsigNN_cut->Draw("ap");                                                                  
             gsigNN_cut->SetMarkerStyle(4);                                                               
-            gsigNN_cut->SetMarkerSize(0.5);                                                              
+            gsigNN_cut->SetMarkerSize(0.3);                                                              
             gsigNN_cut->SetMarkerColor(4);                                                               
             //gsigNN_cut->SetTitle("after 1st NN cut");
             gsigNN_cut->SetTitle(0);
@@ -464,7 +466,7 @@ int main(int argc, char** argv){
             TGraph* gsigNN2_cut = new TGraph(signalNN_X_2_cut.size(), &signalNN_X_2_cut[0], &signalNN_Y_2_cut[0]);    
             gsigNN2_cut->Draw("ap");                                                                  
             gsigNN2_cut->SetMarkerStyle(4);                                                               
-            gsigNN2_cut->SetMarkerSize(0.5);                                                              
+            gsigNN2_cut->SetMarkerSize(0.3);                                                              
 	    gsigNN2_cut->SetMarkerColor(4);                                                               
 	    //gsigNN2_cut->SetTitle("after 2nd NN cut: Result");
             gsigNN2_cut->SetTitle(0);
