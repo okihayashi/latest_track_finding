@@ -119,8 +119,8 @@ void NeuralNet(vector<double> *x, vector<double> *y, vector<double> *signalX, ve
 			    
 			    //cout << "R_term = " << R_term << endl;
 			    //cout << "---------------------" << endl;
-			    double T_kln = pow(cos(fabs(theta_kln)-theta_tr),lambda)/(pow(d_kl,kl)+pow(d_ln,ln)) + R_term;
-			    //double T_kln = pow(cos(fabs(theta_kln)-theta_tr),lambda)/(pow(d_kl,kl)+pow(d_ln,ln)); 
+			    //double T_kln = pow(cos(fabs(theta_kln)-theta_tr),lambda)/(pow(d_kl,kl)+pow(d_ln,ln)) + R_term;
+			    double T_kln = pow(cos(fabs(theta_kln)-theta_tr),lambda)/(pow(d_kl,kl)+pow(d_ln,ln)); 
 			    T_klnV_ln += T_kln * V[l][n];
 
 			}else{
