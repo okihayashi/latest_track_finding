@@ -137,12 +137,8 @@ int main(int argc, char** argv){
         CDCcell_layerID_cut.clear();  
         CDCcell_cellID_cut.clear();   
         CDCcell_pz_signal.clear();    
-
-
-
     }
     h1->Draw();
-    
     c1->Update();
     app.Run();
 }
