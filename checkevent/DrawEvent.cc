@@ -72,7 +72,7 @@ void DrawEvent(){
     gStyle->SetPadGridX(1);
     gStyle->SetPadGridY(1);
 
-    TFile* file = new TFile("signal.140905M02.noise-3.root");
+    TFile* file = new TFile("../../Data/signal.140905M02.noise-3.root");
     TTree* t = (TTree*)file->Get("tree");
 
     TCanvas* c1 = new TCanvas("c1","c1",10,10,800,800);

@@ -9,10 +9,12 @@
 #include <TFile.h>
 #include <TTree.h>
 #include <TRandom.h>
+#include <TH1.h>
 #include "Wirepos0.hh"
+#include "WireposEP.hh"
+#include "WireposReverse.hh"
 #include "NeuralNet.hh"
 #include "Density_Cut.hh"
-#include <TH1.h>
 #include "LayerInf140328.hh"
 
 using namespace std;
@@ -275,6 +277,10 @@ int main(int argc, char** argv){
 		NNParameter param1 = {500000, 3., 1., 1., 10., 0., 10., 1., 0.8, 6., 0.1};
 		NeuralNet(&x_02, &y_02, &signalNN_X, &signalNN_Y, &param1);
 		
+		//for(int i=0;i<signalNN_X.size();i++){
+		//    cout << "sig_X[" << i << "] = " << signalNN_X[i] << ":::" << "sig_Y[" << i << "] = " << signalNN_Y[i] << endl;
+		//}
+		
 		vector<double> signalNN_X_cut;     //--* x-coordinate of hits path through the density cut
 		vector<double> signalNN_Y_cut;     //--* y-coordinate of hits path through the density cut 
 		
@@ -296,14 +302,21 @@ int main(int argc, char** argv){
 		vector<double> signalNN_Y_2_cut;   //--* y-coordinate of hits path through the 2nd density cut  
 		
 		//--- 2nd density cut
-		if(signalNN_X_cut.size() > 60){
+		if(signalNN_X_cut.size() > 70){
 		    Density_Cut(&signalNN_X_cut,&signalNN_Y_cut, &signalNN_X_2_cut, &signalNN_Y_2_cut, 40., 30);
 		}else{
 		    //--- if number of hits is not so large, density cut will be not applied 
-		    cout << "No more cut apply" << endl;
+		    cout << "No cut is applied in 2nd density cut" << endl;
 		    signalNN_X_2_cut = signalNN_X_cut;
 		    signalNN_Y_2_cut = signalNN_Y_cut;
 		}
+
+                for(int i=0;i<signalNN_X_2_cut.size();i++){
+		    int layerID_re;
+		    double theta_re;
+		    WireposReverse(signalNN_X_2_cut[i],signalNN_Y_2_cut[i],&layerID_re,&theta_re);
+		}
+
 
 		//--------------------------------------------------------------------------------------------------------------//
 		

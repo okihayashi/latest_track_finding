@@ -70,7 +70,7 @@ void NeuralNet(vector<double> *x, vector<double> *y, vector<double> *signalX, ve
 	if(k == l && k > l){
 	    continue;
 	}
-	if(k < l){
+	if(k != l){
 
 	    double d_kl = sqrt((x->at(l-1)-x->at(k-1))*(x->at(l-1)-x->at(k-1)) + (y->at(l-1)-y->at(k-1))*(y->at(l-1)-y->at(k-1)));  
 
@@ -81,56 +81,54 @@ void NeuralNet(vector<double> *x, vector<double> *y, vector<double> *signalX, ve
 		    if(n == l || k == n){
 			continue;
 		    }
-                    if(l < n){
 
-			double d_ln = sqrt((x->at(n-1)-x->at(l-1))*(x->at(n-1)-x->at(l-1)) + (y->at(n-1)-y->at(l-1))*(y->at(n-1)-y->at(l-1))); 
+		    double d_ln = sqrt((x->at(n-1)-x->at(l-1))*(x->at(n-1)-x->at(l-1)) + (y->at(n-1)-y->at(l-1))*(y->at(n-1)-y->at(l-1))); 
 
-			if(d_ln<R_cut){
+		    if(d_ln<R_cut){
 
-			    double theta_kl = acos((x->at(l-1)-x->at(k-1))/d_kl);
-			    double theta_ln = acos((x->at(n-1)-x->at(l-1))/d_ln);
-			    double theta_kln = theta_ln - theta_kl;
+			double theta_kl = acos((x->at(l-1)-x->at(k-1))/d_kl);
+			double theta_ln = acos((x->at(n-1)-x->at(l-1))/d_ln);
+			double theta_kln = theta_ln - theta_kl;
+			
+			if(fabs(theta_kln)<angle_cut){
+			    //--- Calculate T_kln
+			    double A = (x->at(l-1)-x->at(k-1))/(y->at(l-1)-y->at(k-1));
+			    double B = (x->at(l-1)-x->at(k-1))*(x->at(k-1)+x->at(l-1))/(2*(y->at(l-1)-y->at(k-1))) + (y->at(k-1)+y->at(l-1))/2.;
+			    double C = (x->at(n-1)-x->at(l-1))/(y->at(n-1)-y->at(l-1)); 
+			    double D = (x->at(n-1)-x->at(l-1))*(x->at(l-1)+x->at(n-1))/(2*(y->at(n-1)-y->at(l-1))) + (y->at(l-1)+y->at(n-1))/2.; 
+			    double x_center = (B-D)/(A-C);
+			    double y_center = -A*(B-D)/(A-C) + B;
+			    double R_kln = sqrt((x->at(k-1)-x_center)*(x->at(k-1)-x_center) + (y->at(k-1)-y_center)*(y->at(k-1)-y_center));
+			    double R_0 = sqrt(x_center*x_center + y_center*y_center);
+			    double R_term = 0;
+			    //cout << "xk xl xn = " << x->at(k-1) << " " << x->at(l-1) <<  " " << x->at(n-1) << " " << endl;
+			    //cout << "yk yl yn = " << y->at(k-1) << " " << y->at(l-1) <<  " " << y->at(n-1) << " " << endl; 
+			    //cout << "x-center = " << x_center << " , y_center = " << y_center << endl;
+			    //cout << "R_kln = " << R_kln << endl;
+			    //cout << "R_0 = " << R_0 << endl; 
+			    //cout << "R_0-R_kln = " << fabs(R_0-R_kln) << endl;
 			    
-			    if(fabs(theta_kln)<angle_cut){
-				//--- Calculate T_kln
-				double A = (x->at(l-1)-x->at(k-1))/(y->at(l-1)-y->at(k-1));
-				double B = (x->at(l-1)-x->at(k-1))*(x->at(k-1)+x->at(l-1))/(2*(y->at(l-1)-y->at(k-1))) + (y->at(k-1)+y->at(l-1))/2.;
-				double C = (x->at(n-1)-x->at(l-1))/(y->at(n-1)-y->at(l-1)); 
-				double D = (x->at(n-1)-x->at(l-1))*(x->at(l-1)+x->at(n-1))/(2*(y->at(n-1)-y->at(l-1))) + (y->at(l-1)+y->at(n-1))/2.; 
-				double x_center = (B-D)/(A-C);
-				double y_center = -A*(B-D)/(A-C) + B;
-				double R_kln = sqrt((x->at(k-1)-x_center)*(x->at(k-1)-x_center) + (y->at(k-1)-y_center)*(y->at(k-1)-y_center));
-				double R_0 = sqrt(x_center*x_center + y_center*y_center);
-				double R_term = 0;
-				//cout << "xk xl xn = " << x->at(k-1) << " " << x->at(l-1) <<  " " << x->at(n-1) << " " << endl;
-				//cout << "yk yl yn = " << y->at(k-1) << " " << y->at(l-1) <<  " " << y->at(n-1) << " " << endl; 
-				//cout << "x-center = " << x_center << " , y_center = " << y_center << endl;
-				//cout << "R_kln = " << R_kln << endl;
-				//cout << "R_0 = " << R_0 << endl; 
-				//cout << "R_0-R_kln = " << fabs(R_0-R_kln) << endl;
-				
-				if(fabs(R_0-R_kln)>0.1){
-				    R_term = 1./fabs(R_0-R_kln);
-				}
-				if(fabs(R_0-R_kln)<0.1){
-				    //--- insert some huge number to R_term 
-				    R_term = DBL_MAX;
-				    
-				}
-				
-				//cout << "R_term = " << R_term << endl;
-				//cout << "---------------------" << endl;
-				//double T_kln = pow(cos(fabs(theta_kln)-theta_tr),lambda)/(pow(d_kl,kl)+pow(d_ln,ln)) + R_term;
-				double T_kln = pow(cos(fabs(theta_kln)-theta_tr),lambda)/(pow(d_kl,kl)+pow(d_ln,ln)); 
-				T_klnV_ln += T_kln * V[l][n];
-
-			    }else{
-				continue;
+			    if(fabs(R_0-R_kln)>0.1){
+				R_term = 1./fabs(R_0-R_kln);
 			    }
+			    if(fabs(R_0-R_kln)<0.1){
+				//--- insert some huge number to R_term 
+				R_term = DBL_MAX;
+				
+			    }
+			    
+			    //cout << "R_term = " << R_term << endl;
+			    //cout << "---------------------" << endl;
+			    //double T_kln = pow(cos(fabs(theta_kln)-theta_tr),lambda)/(pow(d_kl,kl)+pow(d_ln,ln)) + R_term;
+			    double T_kln = pow(cos(fabs(theta_kln)-theta_tr),lambda)/(pow(d_kl,kl)+pow(d_ln,ln)); 
+			    T_klnV_ln += T_kln * V[l][n];
 
 			}else{
 			    continue;
 			}
+
+		    }else{
+			continue;
 		    }
 		}
 
@@ -188,55 +186,55 @@ void NeuralNet(vector<double> *x, vector<double> *y, vector<double> *signalX, ve
     int check_j[1000] = {};
 
     for(int i=1;i<Na+1;i++){
-	for(int j=1;j<Na+1;j++){
-	    if(V[i][j] > threshold){
+        for(int j=1;j<Na+1;j++){
+            if(V[i][j] > threshold){
 
-		if(check_i[i] == 0 && check_j[i] == 0){
-		    if(!signalX->size()){
+        	if(check_i[i] == 0 && check_j[i] == 0){
+        	    if(!signalX->size()){
                         signalX->push_back(x->at(i-1)); 
-			signalY->push_back(y->at(i-1)); 
-			check_i[i] = 1;
-			check_j[i] = 1;     
-		    }			
-		    if(signalX->size()){
-			int flag1 = 0;
-			for(int k=0;k<signalX->size();k++){
-			    if(x->at(i-1) == signalX->at(k)){
-				flag1 = 1;
-			    }
-			}
-			if(flag1 == 0){
-			    signalX->push_back(x->at(i-1));
-			    signalY->push_back(y->at(i-1));
-			    check_i[i] = 1;
-			    check_j[i] = 1;
-			}
-		    }
-		}
-		if(check_j[j] == 0 && check_i[j] == 0){    
-		    if(!signalX->size()){
+        		signalY->push_back(y->at(i-1)); 
+        		check_i[i] = 1;
+        		check_j[i] = 1;     
+        	    }			
+        	    if(signalX->size()){
+        		int flag1 = 0;
+        		for(int k=0;k<signalX->size();k++){
+        		    if(x->at(i-1) == signalX->at(k)){
+        			flag1 = 1;
+        		    }
+        		}
+        		if(flag1 == 0){
+        		    signalX->push_back(x->at(i-1));
+        		    signalY->push_back(y->at(i-1));
+        		    check_i[i] = 1;
+        		    check_j[i] = 1;
+        		}
+        	    }
+        	}
+        	if(check_j[j] == 0 && check_i[j] == 0){    
+        	    if(!signalX->size()){
                         signalX->push_back(x->at(j-1));   
                         signalY->push_back(y->at(j-1));   
-			check_j[j] = 1;
-			check_i[j] = 1;
-		    }			
-		    if(signalX->size()){
-			int flag2 = 0;
-			for(int l=0;l<signalX->size();l++){
-			    if(x->at(j-1) == signalX->at(l)){
-				flag2 = 1;
-			    }
-			}
-			if(flag2 == 0){			
-			    signalX->push_back(x->at(j-1));  
-			    signalY->push_back(y->at(j-1)); 
-			    check_j[j] = 1;
-			    check_i[j] = 1;
-			}
-		    }
-		}
-	    }
-	}
+        		check_j[j] = 1;
+        		check_i[j] = 1;
+        	    }			
+        	    if(signalX->size()){
+        		int flag2 = 0;
+        		for(int l=0;l<signalX->size();l++){
+        		    if(x->at(j-1) == signalX->at(l)){
+        			flag2 = 1;
+        		    }
+        		}
+        		if(flag2 == 0){			
+        		    signalX->push_back(x->at(j-1));  
+        		    signalY->push_back(y->at(j-1)); 
+        		    check_j[j] = 1;
+        		    check_i[j] = 1;
+        		}
+        	    }
+        	}
+            }
+        }
     }
 
 }
