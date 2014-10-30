@@ -14,9 +14,10 @@ void Wirepos0(int layer, int cell, double *x, double *y){
 	    LayerInf layerinf(i);
 	    Radius = layerinf.GetR_0();
             N = layerinf.GetNOfWire();
+	    double NOfSkip = static_cast<double>(layerinf.GetNOfSkip());
 	    for(int j=0;j<N;j++){
 		if(cell == j){
-		    Radian = layerinf.GetInterval()*(j + double(layerinf.GetNOfSkip()/2.));
+		    Radian = layerinf.GetInterval()*(j + NOfSkip/2.);
 		    break;
 		}
 	    }

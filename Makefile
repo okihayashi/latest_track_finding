@@ -1,5 +1,5 @@
 TARGETS=TrackFinding
-SRCS = TrackFinding.cc LayerInf140328.cc Wirepos0.cc WireposEP.cc WireposReverse.cc NeuralNet.cc Density_Cut.cc
+SRCS = TrackFinding.cc LayerInf140328.cc Wirepos0.cc WireposEP_kai.cc WireposReverse.cc NeuralNet.cc Density_Cut.cc Distance.cc DrawDetector.cc
 OBJS = $(SRCS:.cc=.o)
 
 ROOTFLAGS = $(shell root-config --cflags)

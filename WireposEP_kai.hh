@@ -14,6 +14,6 @@
 #ifndef WIREPOSEP_HH
 #define WIREPOSEP_HH
 
-void WireposEP(int layer, int cell, double *x, double *y, double *z);
+void WireposEP(int layer, double theta, double *x, double *y, double *z);
 
 #endif

@@ -12,10 +12,10 @@
 //-----------------------------------------------------------//	               
 
 #include <math.h>
-#include "WireposEP.hh"
+#include "WireposEP_kai.hh"
 #include "LayerInf140328.hh"
 
-void WireposEP(int layer, int cell, double *x, double *y, double *z){
+void WireposEP(int layer, double theta, double *x, double *y, double *z){
 
     double Radius = 0;
     double Radian = 0;
@@ -27,12 +27,14 @@ void WireposEP(int layer, int cell, double *x, double *y, double *z){
 	    Radius = layerinf.GetR_EP();
 	    N = layerinf.GetNOfWire();
             *z = layerinf.Getz_EP();
-	    for(int j=0;j<N;j++){
-		if(cell == j){
-		    Radian = layerinf.GetInterval() * j;
-		    break;
-		}
-	    }
+	    double NOfSkip = static_cast<double>(layerinf.GetNOfSkip());
+	    Radian = theta + layerinf.GetInterval() * NOfSkip/2.;
+	    //for(int j=0;j<N;j++){
+	    //    if(cell == j){
+	    //        Radian = layerinf.GetInterval() * j;
+	    //        break;
+	    //    }
+	    //}
 	    break;    
 	}
     }
