@@ -13,6 +13,9 @@ int main(int argc, char** argv){
     TTree* t = (TTree*)file->Get("tree");
 
     int CdcCell_nHits;
+    vector<double>* CdcCell_x = 0;
+    vector<double>* CdcCell_y = 0;
+    vector<double>* CdcCell_z = 0;
     vector<double>* CdcCell_px = 0;
     vector<double>* CdcCell_py = 0;
     vector<double>* CdcCell_pz = 0;
@@ -23,6 +26,9 @@ int main(int argc, char** argv){
 
     t->SetBranchAddress("CdcCell_nHits",&CdcCell_nHits);
     t->SetBranchAddress("CdcCell_px",&CdcCell_px);
+    t->SetBranchAddress("CdcCell_x",&CdcCell_x);
+    t->SetBranchAddress("CdcCell_y",&CdcCell_y);
+    t->SetBranchAddress("CdcCell_z",&CdcCell_z);
     t->SetBranchAddress("CdcCell_py",&CdcCell_py);
     t->SetBranchAddress("CdcCell_pz",&CdcCell_pz);
     t->SetBranchAddress("CdcCell_cellID",&CdcCell_cellID);
@@ -33,7 +39,10 @@ int main(int argc, char** argv){
     TFile* newfile = TFile::Open("/Users/hayashi_oki/Workspace/Track-finding/Helix/NN/Data/signal.140905M02.noise-3.root","RECREATE");
     TTree* t2 = new TTree("tree","tree");
     
-    int CDCcell_nHits;                   
+    int CDCcell_nHits;
+    vector<double> CDCcell_x;
+    vector<double> CDCcell_y;
+    vector<double> CDCcell_z;
     vector<double> CDCcell_px;      
     vector<double> CDCcell_py;      
     vector<double> CDCcell_pz;      
@@ -43,6 +52,9 @@ int main(int argc, char** argv){
     vector<int> CDCcell_hittype;   
     
     t2->Branch("CdcCell_nHits",&CDCcell_nHits);
+    t2->Branch("CdcCell_x",&CDCcell_x);
+    t2->Branch("CdcCell_y",&CDCcell_y);
+    t2->Branch("CdcCell_z",&CDCcell_z);
     t2->Branch("CdcCell_px",&CDCcell_px);
     t2->Branch("CdcCell_py",&CDCcell_py);
     t2->Branch("CdcCell_pz",&CDCcell_pz);
@@ -52,7 +64,7 @@ int main(int argc, char** argv){
     t2->Branch("CdcCell_hittype",&CDCcell_hittype);
 
     int flag;
-    double dummy1, dummy2, dummy3, dummy4, dummy5, dummy6, dummy7;
+    double dummy1, dummy2, dummy3, dummy4, dummy5, dummy6, dummy7, dummy14, dummy15, dummy16;
 
     for(int i=0;i<t->GetEntries();i++){
 	cout << "i = " << i << endl;
@@ -60,7 +72,10 @@ int main(int argc, char** argv){
         CDCcell_nHits = CdcCell_nHits;
 
         for(int a=0;a<CDCcell_nHits;a++){
-            CDCcell_px.push_back(CdcCell_px->at(a));
+	    CDCcell_x.push_back(CdcCell_x->at(a));
+	    CDCcell_y.push_back(CdcCell_y->at(a)); 
+            CDCcell_z.push_back(CdcCell_z->at(a)); 
+	    CDCcell_px.push_back(CdcCell_px->at(a));
             CDCcell_py.push_back(CdcCell_py->at(a)); 
             CDCcell_pz.push_back(CdcCell_pz->at(a));
             CDCcell_cellID.push_back(CdcCell_cellID->at(a));
@@ -103,6 +118,18 @@ int main(int argc, char** argv){
                     dummy7 = CDCcell_hittype[j];                    
                     CDCcell_hittype[j] = CDCcell_hittype[j+1];   
                     CDCcell_hittype[j+1] = dummy7;
+
+		    dummy14 = CDCcell_x[j];                     
+                    CDCcell_x[j] = CDCcell_x[j+1];       
+                    CDCcell_x[j+1] = dummy14;                   
+
+                    dummy15 = CDCcell_y[j];                      
+                    CDCcell_y[j] = CDCcell_y[j+1];               
+                    CDCcell_y[j+1] = dummy15;                    
+
+                    dummy16 = CDCcell_z[j];                      
+                    CDCcell_z[j] = CDCcell_z[j+1];               
+                    CDCcell_z[j+1] = dummy16;                    
 		}
 	    }
 	}while(flag == 1);
@@ -113,7 +140,7 @@ int main(int argc, char** argv){
 
 	int layerID;
         int N[18] = {};
-	double dummy8, dummy9, dummy10, dummy11, dummy12, dummy13;
+	double dummy8, dummy9, dummy10, dummy11, dummy12, dummy13, dummy17, dummy18, dummy19;
 
 	for(int i=0;i<CDCcell_nHits;i++){
 	    layerID = CDCcell_layerID[i];
@@ -155,6 +182,23 @@ int main(int argc, char** argv){
                                 dummy13 = CDCcell_hittype[k];                      
                                 CDCcell_hittype[k] = CDCcell_hittype[k+1];    
                                 CDCcell_hittype[k+1] = dummy13;
+			    
+			        dummy17 = CDCcell_x[j];       
+			        CDCcell_x[j] = CDCcell_x[j+1];
+			        CDCcell_x[j+1] = dummy17;     
+			    
+			        dummy17 = CDCcell_x[j];       
+			        CDCcell_x[j] = CDCcell_x[j+1];
+			        CDCcell_x[j+1] = dummy17;     
+			    
+			        dummy18 = CDCcell_x[j];       
+                                CDCcell_x[j] = CDCcell_x[j+1];
+                                CDCcell_x[j+1] = dummy18;     
+
+                                dummy19 = CDCcell_x[j];       
+                                CDCcell_x[j] = CDCcell_x[j+1];
+			        CDCcell_x[j+1] = dummy19;     
+			    
 			    }
 			}
 		    }
@@ -165,6 +209,9 @@ int main(int argc, char** argv){
         
 
 	t2->Fill();
+	CDCcell_x.clear();
+	CDCcell_y.clear();
+	CDCcell_z.clear();
         CDCcell_px.clear();      
         CDCcell_py.clear();      
         CDCcell_pz.clear();      

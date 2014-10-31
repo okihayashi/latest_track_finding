@@ -26,9 +26,10 @@ void WireposEP(int layer, double theta, double *x, double *y, double *z){
 	    LayerInf layerinf(i);
 	    Radius = layerinf.GetR_EP();
 	    N = layerinf.GetNOfWire();
-            *z = layerinf.Getz_EP();
+            *z = (-1.)*layerinf.Getz_EP();
 	    double NOfSkip = static_cast<double>(layerinf.GetNOfSkip());
-	    Radian = theta + layerinf.GetInterval() * NOfSkip/2.;
+	    //Radian = theta + layerinf.GetInterval() * NOfSkip/2.;
+	    Radian = theta - layerinf.GetInterval() * NOfSkip/2.; 
 	    //for(int j=0;j<N;j++){
 	    //    if(cell == j){
 	    //        Radian = layerinf.GetInterval() * j;

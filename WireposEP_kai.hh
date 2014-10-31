@@ -11,8 +11,8 @@
 //	    (z-coordinate of position of sense wire)                            
 //-----------------------------------------------------------//	                
 
-#ifndef WIREPOSEP_HH
-#define WIREPOSEP_HH
+#ifndef WIREPOSEP_KAI_HH
+#define WIREPOSEP_KAI_HH
 
 void WireposEP(int layer, double theta, double *x, double *y, double *z);
 
