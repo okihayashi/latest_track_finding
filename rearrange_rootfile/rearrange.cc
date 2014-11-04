@@ -39,6 +39,7 @@ int main(int argc, char** argv){
     TFile* newfile = TFile::Open("/Users/hayashi_oki/Workspace/Track-finding/Helix/NN/Data/signal.140905M02.noise-3.root","RECREATE");
     TTree* t2 = new TTree("tree","tree");
     
+    int CDCcell_eventID = 0;
     int CDCcell_nHits;
     vector<double> CDCcell_x;
     vector<double> CDCcell_y;
@@ -51,6 +52,7 @@ int main(int argc, char** argv){
     vector<double> CDCcell_edep;    
     vector<int> CDCcell_hittype;   
     
+    t2->Branch("CdcCell_eventID",&CDCcell_eventID);
     t2->Branch("CdcCell_nHits",&CDCcell_nHits);
     t2->Branch("CdcCell_x",&CDCcell_x);
     t2->Branch("CdcCell_y",&CDCcell_y);
@@ -209,6 +211,7 @@ int main(int argc, char** argv){
         
 
 	t2->Fill();
+	CDCcell_eventID++;
 	CDCcell_x.clear();
 	CDCcell_y.clear();
 	CDCcell_z.clear();

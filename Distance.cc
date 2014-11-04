@@ -24,10 +24,8 @@ void Distance(Lineinf* inf){
 
     //Nearest z1
     double z1 = inf->a3 + (ABm * nn - ABn * mn)/(mm * nn - mn * mn) * ((inf->b3) - (inf->a3));
-    
     //Nearest z2
     double z2 = inf->c3 + (ABm * mn - ABn * mm)/(nn * mm - mn * mn) * ((inf->d3) - (inf->c3));
-
     //Return Average of z1 and z2
     inf->z = (z1 + z2)/2.;
 

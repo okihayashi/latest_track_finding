@@ -3,11 +3,17 @@
 #include "LayerInf140328.hh"
 #include "WireposReverse.hh"
 
+#define PI 3.14159265358979
+
 void WireposReverse(double x, double y, int* layerID, double* theta){
     
     double radius = sqrt(x*x + y*y);
-    if(x != 0){
-	*theta = atan(y/x);
+    //if((x > 0 && y > 0) || (x > 0 && y < 0) || (x < 0 && y > 0)){
+    if(x > 0){
+        *theta = atan(y/x);
+    }
+    if(x < 0){
+	*theta = atan(y/x) + PI;
     }
     if(x == 0 && y != 0){
 	*theta = acos(x/y)/asin(x/y);
