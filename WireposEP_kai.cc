@@ -36,7 +36,7 @@ void WireposEP(int layer, double theta, double *x, double *y, double *z){
 	    //        break;
 	    //    }
 	    //}
-	    break;    
+	    //break;    
 	}
     }
     *x = Radius * cos(Radian);

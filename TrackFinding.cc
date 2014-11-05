@@ -335,43 +335,43 @@ int main(int argc, char** argv){
 		    double theta_re = 0;
 		    double x = 0; double y = 0; double z = 0;
 		    double x2 = 0; double y2 = 0; double z2 = 0;
-		    //WireposReverse(signalNN_X_2_cut[i],signalNN_Y_2_cut[i],&layerID_re,&theta_re);
-		    //WireposEP(layerID_re,theta_re,&x,&y,&z);
-		    //WireposEP2(layerID_re,theta_re,&x2,&y2,&z2);
-		    //signalNN_layerID.push_back(layerID_re);
-		    //signalNN_theta.push_back(theta_re);
-		    //signalNN_X_2_cutEP.push_back(x);
-                    //signalNN_Y_2_cutEP.push_back(y);
-                    //signalNN_Z_2_cutEP.push_back(z);
-                    //signalNN_X_2_cutEP2.push_back(x2); 
-                    //signalNN_Y_2_cutEP2.push_back(y2); 
-                    //signalNN_Z_2_cutEP2.push_back(z2);
-		    WireposReverse(x_sig[i],y_sig[i],&layerID_re,&theta_re); 
-                    WireposEP(layerID_re,theta_re,&x,&y,&z);                                       
-                    WireposEP2(layerID_re,theta_re,&x2,&y2,&z2);                                   
-                    signalNN_layerID.push_back(layerID_re);                                        
-                    signalNN_theta.push_back(theta_re);                                            
-                    signalNN_X_2_cutEP.push_back(x);                                               
-                    signalNN_Y_2_cutEP.push_back(y);                                               
-                    signalNN_Z_2_cutEP.push_back(z);                                               
-                    signalNN_X_2_cutEP2.push_back(x2);                                             
-                    signalNN_Y_2_cutEP2.push_back(y2);                                             
-                    signalNN_Z_2_cutEP2.push_back(z2);                                             
+		    WireposReverse(signalNN_X_2_cut[i],signalNN_Y_2_cut[i],&layerID_re,&theta_re);
+		    WireposEP(layerID_re,theta_re,&x,&y,&z);
+		    WireposEP2(layerID_re,theta_re,&x2,&y2,&z2);
+		    signalNN_layerID.push_back(layerID_re);
+		    signalNN_theta.push_back(theta_re);
+		    signalNN_X_2_cutEP.push_back(x);
+                    signalNN_Y_2_cutEP.push_back(y);
+                    signalNN_Z_2_cutEP.push_back(z);
+                    signalNN_X_2_cutEP2.push_back(x2); 
+                    signalNN_Y_2_cutEP2.push_back(y2); 
+                    signalNN_Z_2_cutEP2.push_back(z2);
+		    //WireposReverse(x_sig[i],y_sig[i],&layerID_re,&theta_re); 
+                    //WireposEP(layerID_re,theta_re,&x,&y,&z);                                       
+                    //WireposEP2(layerID_re,theta_re,&x2,&y2,&z2);                                   
+                    //signalNN_layerID.push_back(layerID_re);                                        
+                    //signalNN_theta.push_back(theta_re);                                            
+                    //signalNN_X_2_cutEP.push_back(x);                                               
+                    //signalNN_Y_2_cutEP.push_back(y);                                               
+                    //signalNN_Z_2_cutEP.push_back(z);                                               
+                    //signalNN_X_2_cutEP2.push_back(x2);                                             
+                    //signalNN_Y_2_cutEP2.push_back(y2);                                             
+                    //signalNN_Z_2_cutEP2.push_back(z2);                                             
 		}
 
                 for(int i=0;i<signalNN_X_2_cut.size();i++){
 		    for(int j=0;j<signalNN_X_2_cut.size();j++){
 			if((signalNN_layerID[i]+1 == signalNN_layerID[j]) || (signalNN_layerID[i]-1 == signalNN_layerID[j])){
-			    if((signalNN_layerID[i]%2 != 0 && signalNN_theta[j]-signalNN_theta[i]>=0 && signalNN_theta[j]-signalNN_theta[i]<0.1) || 
-			       (signalNN_layerID[i]%2 == 0 && signalNN_theta[j]-signalNN_theta[i]>=-0.1 && signalNN_theta[j]-signalNN_theta[i]<0)){
+			    if((signalNN_layerID[i]%2 != 0 && signalNN_theta[j]-signalNN_theta[i]>=-0.18 && signalNN_theta[j]-signalNN_theta[i]<0.18) || 
+			       (signalNN_layerID[i]%2 == 0 && signalNN_theta[j]-signalNN_theta[i]>=-0.18 && signalNN_theta[j]-signalNN_theta[i]<-0.18)){
 				
                                 cout << "********" << endl; 
-				cout << "layerID[" << i << "] = " << signalNN_layerID[i] << " and layerID[" << j << "] = " << signalNN_layerID[j] << endl;
-				cout << "theta[" << i << "] = " << signalNN_theta[i] << " and theta[" << j << "] = " << signalNN_theta[j] << endl;
-                                //cout << "x1(1) = " << signalNN_X_2_cut[i] << " , y1(1) = " << signalNN_Y_2_cut[i] << endl;
-                                //cout << "x2(1) = " << signalNN_X_2_cut[j] << " , y2(1) = " << signalNN_Y_2_cut[j] << endl; 
-				//cout << "x1(2) = " << signalNN_X_2_cutEP[i] << ", y1(2) = " << signalNN_Y_2_cutEP[i] << endl;
-				//cout << "x2(2) = " << signalNN_X_2_cutEP[j] << ", y2(2) = " << signalNN_Y_2_cutEP[j] << endl;
+				//cout << "layerID[" << i << "] = " << signalNN_layerID[i] << " and layerID[" << j << "] = " << signalNN_layerID[j] << endl;
+				//cout << "theta[" << i << "] = " << signalNN_theta[i] << " and theta[" << j << "] = " << signalNN_theta[j] << endl;
+                                cout << "x1(1) = " << signalNN_X_2_cut[i] << " , y1(1) = " << signalNN_Y_2_cut[i] << endl;
+                                cout << "x2(1) = " << signalNN_X_2_cut[j] << " , y2(1) = " << signalNN_Y_2_cut[j] << endl; 
+				cout << "x1(2) = " << signalNN_X_2_cutEP[i] << ", y1(2) = " << signalNN_Y_2_cutEP[i] << endl;
+				cout << "x2(2) = " << signalNN_X_2_cutEP[j] << ", y2(2) = " << signalNN_Y_2_cutEP[j] << endl;
 				cout << "zEP(1) = " << signalNN_Z_2_cutEP[i] << endl;
                                 cout << "zEP(2) = " << signalNN_Z_2_cutEP2[i] << endl; 
                                 cout << "zEP2(1) = " << signalNN_Z_2_cutEP[j] << endl;   
@@ -387,8 +387,8 @@ int main(int argc, char** argv){
 						x_near_i, x_near_j, y_near_i, y_near_j, z_near};
 				Distance(&inf1);
 
-                                //cout << "x_near = " << x_near_i << ": y_near = " << y_near_i << ": z_near = " << z_near << endl;
-                                //cout << "********" << endl; 
+                                cout << "x_near = " << x_near_i << ": y_near = " << y_near_i << ": z_near = " << z_near << endl;
+                                cout << "********" << endl; 
 				signal_distance_X.push_back((x_near_i+x_near_j)/2.);
 				signal_distance_Y.push_back((y_near_i+y_near_j)/2.);
 				signal_distance_Z.push_back(z_near);
@@ -545,8 +545,8 @@ int main(int argc, char** argv){
 		//gcut->SetMarkerSize(0.5);                                       
 		//gcut->SetMarkerColor(4);                                        
 	
-		TGraph* gsig = new TGraph(x_sig.size(), &x_sig[0], &y_sig[0]);  
-		//TGraph* gsig = new TGraph(CDCcell_x_signal.size(), &CDCcell_x_signal[0], &CDCcell_y_signal[0]);
+		//TGraph* gsig = new TGraph(x_sig.size(), &x_sig[0], &y_sig[0]);  
+		TGraph* gsig = new TGraph(CDCcell_x_signal.size(), &CDCcell_x_signal[0], &CDCcell_y_signal[0]);
 		gsig->Draw("ap");                                           
 		gsig->SetMarkerStyle(4);                                        
 		gsig->SetMarkerSize(0.3);                                       
@@ -625,7 +625,7 @@ int main(int argc, char** argv){
 		gyz->GetXaxis()->SetTitle("Z [cm]");
 		gyz->GetYaxis()->SetTitle("Y [cm]");
 
-		TGraph* gyz_sig = new TGraph(CDCcell_x_signal.size(), &CDCcell_z_signal[0], &CDCcell_y_signal[0]);
+		TGraph* gyz_sig = new TGraph(CDCcell_x->size(), &CDCcell_z->front(), &CDCcell_y->front());
                 gyz_sig->Draw("p,same");
 		gyz_sig->SetMarkerStyle(3);
 		gyz_sig->SetMarkerSize(0.4);
