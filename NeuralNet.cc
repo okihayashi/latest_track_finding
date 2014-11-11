@@ -92,15 +92,15 @@ void NeuralNet(vector<double> *x, vector<double> *y, vector<double> *signalX, ve
 			
 			if(fabs(theta_kln)<angle_cut){
 			    //--- Calculate T_kln
-			    double A = (x->at(l-1)-x->at(k-1))/(y->at(l-1)-y->at(k-1));
-			    double B = (x->at(l-1)-x->at(k-1))*(x->at(k-1)+x->at(l-1))/(2*(y->at(l-1)-y->at(k-1))) + (y->at(k-1)+y->at(l-1))/2.;
-			    double C = (x->at(n-1)-x->at(l-1))/(y->at(n-1)-y->at(l-1)); 
-			    double D = (x->at(n-1)-x->at(l-1))*(x->at(l-1)+x->at(n-1))/(2*(y->at(n-1)-y->at(l-1))) + (y->at(l-1)+y->at(n-1))/2.; 
-			    double x_center = (B-D)/(A-C);
-			    double y_center = -A*(B-D)/(A-C) + B;
-			    double R_kln = sqrt((x->at(k-1)-x_center)*(x->at(k-1)-x_center) + (y->at(k-1)-y_center)*(y->at(k-1)-y_center));
-			    double R_0 = sqrt(x_center*x_center + y_center*y_center);
-			    double R_term = 0;
+			    //double A = (x->at(l-1)-x->at(k-1))/(y->at(l-1)-y->at(k-1));
+			    //double B = (x->at(l-1)-x->at(k-1))*(x->at(k-1)+x->at(l-1))/(2*(y->at(l-1)-y->at(k-1))) + (y->at(k-1)+y->at(l-1))/2.;
+			    //double C = (x->at(n-1)-x->at(l-1))/(y->at(n-1)-y->at(l-1)); 
+			    //double D = (x->at(n-1)-x->at(l-1))*(x->at(l-1)+x->at(n-1))/(2*(y->at(n-1)-y->at(l-1))) + (y->at(l-1)+y->at(n-1))/2.; 
+			    //double x_center = (B-D)/(A-C);
+			    //double y_center = -A*(B-D)/(A-C) + B;
+			    //double R_kln = sqrt((x->at(k-1)-x_center)*(x->at(k-1)-x_center) + (y->at(k-1)-y_center)*(y->at(k-1)-y_center));
+			    //double R_0 = sqrt(x_center*x_center + y_center*y_center);
+			    //double R_term = 0;
 			    //cout << "xk xl xn = " << x->at(k-1) << " " << x->at(l-1) <<  " " << x->at(n-1) << " " << endl;
 			    //cout << "yk yl yn = " << y->at(k-1) << " " << y->at(l-1) <<  " " << y->at(n-1) << " " << endl; 
 			    //cout << "x-center = " << x_center << " , y_center = " << y_center << endl;
@@ -108,14 +108,14 @@ void NeuralNet(vector<double> *x, vector<double> *y, vector<double> *signalX, ve
 			    //cout << "R_0 = " << R_0 << endl; 
 			    //cout << "R_0-R_kln = " << fabs(R_0-R_kln) << endl;
 			    
-			    if(fabs(R_0-R_kln)>0.1){
-				R_term = 1./fabs(R_0-R_kln);
-			    }
-			    if(fabs(R_0-R_kln)<0.1){
-				//--- insert some huge number to R_term 
-				R_term = DBL_MAX;
-				
-			    }
+			    //if(fabs(R_0-R_kln)>0.1){
+			    //    R_term = 1./fabs(R_0-R_kln);
+			    //}
+			    //if(fabs(R_0-R_kln)<0.1){
+			    //    //--- insert some huge number to R_term 
+			    //    R_term = DBL_MAX;
+			    //    
+			    //}
 			    
 			    //cout << "R_term = " << R_term << endl;
 			    //cout << "---------------------" << endl;
