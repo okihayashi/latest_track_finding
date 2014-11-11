@@ -12,7 +12,7 @@ int main(int argc, char** argv){
     TFile* file = new TFile("/Users/hayashi_oki/Workspace/Track-finding/Helix/NN/Data/signal.140905M02.noise-2.root");
     TTree* t = (TTree*)file->Get("tree");
 
-    int CdcCell_nHits;
+    int CdcCell_nHits = 0;
     vector<double>* CdcCell_x = 0;
     vector<double>* CdcCell_y = 0;
     vector<double>* CdcCell_z = 0;
@@ -40,17 +40,17 @@ int main(int argc, char** argv){
     TTree* t2 = new TTree("tree","tree");
     
     int CDCcell_eventID = 0;
-    int CDCcell_nHits;
-    vector<double> CDCcell_x;
-    vector<double> CDCcell_y;
-    vector<double> CDCcell_z;
-    vector<double> CDCcell_px;      
-    vector<double> CDCcell_py;      
-    vector<double> CDCcell_pz;      
-    vector<double> CDCcell_cellID;  
-    vector<double> CDCcell_layerID; 
-    vector<double> CDCcell_edep;    
-    vector<int> CDCcell_hittype;   
+    int CDCcell_nHits = 0;
+    vector<double> CDCcell_x(0);
+    vector<double> CDCcell_y(0);
+    vector<double> CDCcell_z(0);
+    vector<double> CDCcell_px(0);      
+    vector<double> CDCcell_py(0);      
+    vector<double> CDCcell_pz(0);      
+    vector<double> CDCcell_cellID(0);  
+    vector<double> CDCcell_layerID(0); 
+    vector<double> CDCcell_edep(0);    
+    vector<int> CDCcell_hittype(0);   
     
     t2->Branch("CdcCell_eventID",&CDCcell_eventID);
     t2->Branch("CdcCell_nHits",&CDCcell_nHits);
@@ -66,7 +66,6 @@ int main(int argc, char** argv){
     t2->Branch("CdcCell_hittype",&CDCcell_hittype);
 
     int flag;
-    double dummy1, dummy2, dummy3, dummy4, dummy5, dummy6, dummy7, dummy14, dummy15, dummy16;
 
     for(int i=0;i<t->GetEntries();i++){
 	cout << "i = " << i << endl;
@@ -86,6 +85,7 @@ int main(int argc, char** argv){
 	    CDCcell_hittype.push_back(CdcCell_hittype->at(a));
 	}
 
+        double dummy1, dummy2, dummy3, dummy4, dummy5, dummy6, dummy7, dummy14, dummy15, dummy16;
 	do{
 	    flag = 0;
 	    for(int j=0;j<CDCcell_nHits-1;j++){
@@ -185,22 +185,17 @@ int main(int argc, char** argv){
                                 CDCcell_hittype[k] = CDCcell_hittype[k+1];    
                                 CDCcell_hittype[k+1] = dummy13;
 			    
-			        dummy17 = CDCcell_x[j];       
-			        CDCcell_x[j] = CDCcell_x[j+1];
-			        CDCcell_x[j+1] = dummy17;     
+			        dummy17 = CDCcell_x[k];       
+			        CDCcell_x[k] = CDCcell_x[k+1];
+			        CDCcell_x[k+1] = dummy17;     
 			    
-			        dummy17 = CDCcell_x[j];       
-			        CDCcell_x[j] = CDCcell_x[j+1];
-			        CDCcell_x[j+1] = dummy17;     
+			        dummy18 = CDCcell_y[k];       
+			        CDCcell_y[k] = CDCcell_y[k+1];
+			        CDCcell_y[k+1] = dummy18;     
 			    
-			        dummy18 = CDCcell_x[j];       
-                                CDCcell_x[j] = CDCcell_x[j+1];
-                                CDCcell_x[j+1] = dummy18;     
-
-                                dummy19 = CDCcell_x[j];       
-                                CDCcell_x[j] = CDCcell_x[j+1];
-			        CDCcell_x[j+1] = dummy19;     
-			    
+			        dummy19 = CDCcell_z[k];       
+                                CDCcell_z[k] = CDCcell_z[k+1];
+                                CDCcell_z[k+1] = dummy19;     
 			    }
 			}
 		    }

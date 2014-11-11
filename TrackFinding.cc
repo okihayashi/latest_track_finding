@@ -149,123 +149,153 @@ int main(int argc, char** argv){
 		vector<double> y_sig;              //--* y-coordinate of hit wire by signal 
 		vector<double> x_bg;               //--* x-coordinate of hit wire by noise 
 		vector<double> y_bg;               //--* x-coordinate of hit wire by noise 
-		int count = 0;  
-		int count2 = 0; 
-		int index = 0;  
-		int count5 = 0;
-		int N[18] = {};  
-		
-		cout << "NOfHit = " << CDCcell_nHits << endl;
+		//int count = 0;  
+		//int count2 = 0; 
+		//int index = 0;  
+		//int count5 = 0;
+		//int N[18] = {};  
+		//
+		//cout << "NOfHit = " << CDCcell_nHits << endl;
 
-		for(int i=0;i<CDCcell_nHits;i++){
-		    int layerID = CDCcell_layerID_cut.at(i);
-		    N[layerID-1]++;
-		}
+		//for(int i=0;i<CDCcell_nHits;i++){
+		//    int layerID = CDCcell_layerID_cut.at(i);
+		//    N[layerID-1]++;
+		//}
+                
+                for(int i=0;i<CDCcell_nHits;i++){
+                    double x01 = 0; double y01 = 0;
+                    int layerID_up_cross = 0;
+                    double theta_up_cross = 0;
+                    Wirepos0(CDCcell_layerID_cut[i],CDCcell_cellID_cut[i],&x01,&y01);
+                    if(CDCcell_hittype_cut[i] == 0){
+                        x_sig.push_back(x01);
+                        y_sig.push_back(y01);
+                    }else{
+                        x_bg.push_back(x01);
+                        y_bg.push_back(y01);
+                    }
+                    WireposReverse(x01,y01,&layerID_up_cross,&theta_up_cross);
+                    for(int j=0;j<CDCcell_nHits;j++){
+                        double x02 = 0; double y02 = 0;
+                        int layerID_down_cross = 0;
+                        double theta_down_cross = 0;
+                        Wirepos0(CDCcell_layerID_cut[j],CDCcell_cellID_cut[j],&x02,&y02);
+                        WireposReverse(x02,y02,&layerID_down_cross,&theta_down_cross);
+                        if(layerID_up_cross == layerID_down_cross+1 || layerID_up_cross == layerID_down_cross-1){
+                            if(fabs(theta_down_cross-theta_up_cross)<=0.18){
+                                x_02.push_back(x01);
+                                y_02.push_back(y01);
+                                break;
+                            }
+                        }
+                    }
+                }
+
 
 		//--- layers 
-		for(int i=0;i<18;i++){
-		    if(i>0){
-			index += N[i-1];
-			double check[1000] = {};    //--- check double count for x0, y0
-			double check2[1000] = {};   //--- check double count for x02, y02
-		       
-			//--- cells (upper)
-			for(int j=0;j<N[i];j++){
-			    double x01, y01;
-			    Wirepos0(CDCcell_layerID_cut.at(index+j), CDCcell_cellID_cut.at(index+j), &x01, &y01);
-			    if(i == 17){
-				x_0.push_back(x01);
-				y_0.push_back(y01);
-			    }
-			    if(CDCcell_hittype_cut.at(index+j) != 0){
-				x_bg.push_back(x01);
-				y_bg.push_back(y01);
-			    }
-			    if(CDCcell_hittype_cut.at(index+j) == 0){
-				x_sig.push_back(x01);
-				y_sig.push_back(y01);
-			    }
-			    LayerInf layerinf1(CDCcell_layerID_cut.at(index+j));
-			    double theta_up = layerinf1.GetInterval() * CDCcell_cellID_cut.at(index+j);
+		//for(int i=0;i<18;i++){
+		//    if(i>0){
+		//	index += N[i-1];
+		//	double check[1000] = {};    //--- check double count for x0, y0
+		//	double check2[1000] = {};   //--- check double count for x02, y02
+		//       
+		//	//--- cells (upper)
+		//	for(int j=0;j<N[i];j++){
+		//	    double x01, y01;
+		//	    Wirepos0(CDCcell_layerID_cut.at(index+j), CDCcell_cellID_cut.at(index+j), &x01, &y01);
+		//	    if(i == 17){
+		//		x_0.push_back(x01);
+		//		y_0.push_back(y01);
+		//	    }
+		//	    if(CDCcell_hittype_cut.at(index+j) != 0){
+		//		x_bg.push_back(x01);
+		//		y_bg.push_back(y01);
+		//	    }
+		//	    if(CDCcell_hittype_cut.at(index+j) == 0){
+		//		x_sig.push_back(x01);
+		//		y_sig.push_back(y01);
+		//	    }
+		//	    LayerInf layerinf1(CDCcell_layerID_cut.at(index+j));
+		//	    double theta_up = layerinf1.GetInterval() * CDCcell_cellID_cut.at(index+j);
 
-			    //--- cells (lower)
-			    for(int k=0;k<N[i-1];k++){
-				double x03, y03;
-				Wirepos0(CDCcell_layerID_cut.at(index-N[i-1]+k), CDCcell_cellID_cut.at(index-N[i-1]+k), &x03, &y03);
-				if(check[index-N[i-1]+k] == 0){
-				   x_0.push_back(x03);  
-				   y_0.push_back(y03); 
-				   check[index-N[i-1]+k] = 1;
-				}
-				if(i == 1 && j == 0){
-				    if(CDCcell_hittype_cut.at(index-N[i-1]+k) != 0){
-					x_bg.push_back(x03);
-					y_bg.push_back(y03);
-				    }
-				    if(CDCcell_hittype_cut.at(index-N[i-1]+k) == 0){
-					x_sig.push_back(x03);
-					y_sig.push_back(y03);
-				    }
-				}
-				int flag = 0;
-				if(CDCcell_cellID_cut.at(index-N[i-1]+k)+1 == CDCcell_cellID_cut.at(index-N[i-1]+k+1)){
-				    flag = 1;
-				    count2++;
-				}
-				if(flag == 0){
-				    count2 = 0;
-				}
-				LayerInf layerinf2(CDCcell_layerID_cut.at(index-N[i-1]+k));
-				double theta_down = layerinf2.GetInterval() * CDCcell_cellID_cut.at(index-N[i-1]+k);
+		//	    //--- cells (lower)
+		//	    for(int k=0;k<N[i-1];k++){
+		//		double x03, y03;
+		//		Wirepos0(CDCcell_layerID_cut.at(index-N[i-1]+k), CDCcell_cellID_cut.at(index-N[i-1]+k), &x03, &y03);
+		//		if(check[index-N[i-1]+k] == 0){
+		//		   x_0.push_back(x03);  
+		//		   y_0.push_back(y03); 
+		//		   check[index-N[i-1]+k] = 1;
+		//		}
+		//		if(i == 1 && j == 0){
+		//		    if(CDCcell_hittype_cut.at(index-N[i-1]+k) != 0){
+		//			x_bg.push_back(x03);
+		//			y_bg.push_back(y03);
+		//		    }
+		//		    if(CDCcell_hittype_cut.at(index-N[i-1]+k) == 0){
+		//			x_sig.push_back(x03);
+		//			y_sig.push_back(y03);
+		//		    }
+		//		}
+		//		int flag = 0;
+		//		if(CDCcell_cellID_cut.at(index-N[i-1]+k)+1 == CDCcell_cellID_cut.at(index-N[i-1]+k+1)){
+		//		    flag = 1;
+		//		    count2++;
+		//		}
+		//		if(flag == 0){
+		//		    count2 = 0;
+		//		}
+		//		LayerInf layerinf2(CDCcell_layerID_cut.at(index-N[i-1]+k));
+		//		double theta_down = layerinf2.GetInterval() * CDCcell_cellID_cut.at(index-N[i-1]+k);
 
-				//--- Compare theta_up and theta_down
-				if((i%2 != 0 && theta_up-theta_down>=-0.3 && theta_up-theta_down<0) || (i%2 == 0 && theta_up-theta_down>0 && theta_up-theta_down<=0.3)){
-				    if(check2[index-N[i-1]+k] == 0){                                                                  
-					x_02.push_back(x03);
-					y_02.push_back(y03);
-				    }if(check2[index-N[i-1]+k] == 1){
-					continue;
-				    }
-				    check2[index-N[i-1]+k] = 1;
-				}
-				
-				//--- look for hits in a line continuously in the same layer
-				if(count2>3 && check2[index-N[i-1]+k] == 0){
-				    for(int m=0;m<count2;m++){
-					if(check2[index-N[i-1]+k-m] == 0){
-					    x_02.push_back(x_0[index-N[i-1]+k-m]); 
-					    y_02.push_back(y_0[index-N[i-1]+k-m]); 
-					    check2[index-N[i-1]+k-m] = 1;
-					}	
-				    }       
-				}
-			    }
-			    count = 0;
-			
-			    //--- look for hits in a line continuously in the same layer in only the last 18th layer
-			    //--- because above for(k) statement cannot look the last layer 
-			    if(i == 17){
-				int flag = 0;                                                   
-				if((CDCcell_cellID_cut.at(index+j)-1 == CDCcell_cellID_cut.at(index+j-1)) || (CDCcell_cellID_cut.at(index+j-1) == CDCcell_cellID_cut.at(index+j))){ 
-				    flag = 1;                                                   
-				    count5++;                                                   
-				}                                                               
-				if(flag == 0){                                                  
-				    count5 = 0;                                                 
-				}                                                               
-				if(count5>3){                       
-				    for(int m=0;m<count5;m++){                        
-					if(check2[index+j-1-m] == 0){
-					    x_02.push_back(x_0[index+j-1-m]);  
-					    y_02.push_back(y_0[index+j-1-m]);
-					    check2[index+j-1-m] = 1;
-					}
-				    }                                                 
-				}                                                     
-			    }
-			}
-		    }
-		}
+		//		//--- Compare theta_up and theta_down
+		//		if((i%2 != 0 && theta_up-theta_down>=-0.3 && theta_up-theta_down<0) || (i%2 == 0 && theta_up-theta_down>0 && theta_up-theta_down<=0.3)){
+		//		    if(check2[index-N[i-1]+k] == 0){                                                                  
+		//			x_02.push_back(x03);
+		//			y_02.push_back(y03);
+		//		    }if(check2[index-N[i-1]+k] == 1){
+		//			continue;
+		//		    }
+		//		    check2[index-N[i-1]+k] = 1;
+		//		}
+		//		
+		//		//--- look for hits in a line continuously in the same layer
+		//		if(count2>3 && check2[index-N[i-1]+k] == 0){
+		//		    for(int m=0;m<count2;m++){
+		//			if(check2[index-N[i-1]+k-m] == 0){
+		//			    x_02.push_back(x_0[index-N[i-1]+k-m]); 
+		//			    y_02.push_back(y_0[index-N[i-1]+k-m]); 
+		//			    check2[index-N[i-1]+k-m] = 1;
+		//			}	
+		//		    }       
+		//		}
+		//	    }
+		//	    count = 0;
+		//	
+		//	    //--- look for hits in a line continuously in the same layer in only the last 18th layer
+		//	    //--- because above for(k) statement cannot look the last layer 
+		//	    if(i == 17){
+		//		int flag = 0;                                                   
+		//		if((CDCcell_cellID_cut.at(index+j)-1 == CDCcell_cellID_cut.at(index+j-1)) || (CDCcell_cellID_cut.at(index+j-1) == CDCcell_cellID_cut.at(index+j))){ 
+		//		    flag = 1;                                                   
+		//		    count5++;                                                   
+		//		}                                                               
+		//		if(flag == 0){                                                  
+		//		    count5 = 0;                                                 
+		//		}                                                               
+		//		if(count5>3){                       
+		//		    for(int m=0;m<count5;m++){                        
+		//			if(check2[index+j-1-m] == 0){
+		//			    x_02.push_back(x_0[index+j-1-m]);  
+		//			    y_02.push_back(y_0[index+j-1-m]);
+		//			    check2[index+j-1-m] = 1;
+		//			}
+		//		    }                                                 
+		//		}                                                     
+		//	    }
+		//	}
+		//    }
+		//}
 		//--------------------------------------------------------------------------------------------------------------//
 
 		//--- apply neural network and density cut ---------------------------------------------------------------------//
@@ -333,117 +363,78 @@ int main(int argc, char** argv){
                 vector<double> signal_distance_Z_cut; 
                 
 		//--- transform. (x,y) to (layerID, theta)
-		//for(int i=0;i<signalNN_X_2_cut.size();i++){
-		//    int layerID_re = 0;
-		//    double theta_re = 0;
-		//    double x = 0; double y = 0; double z = 0;
-		//    double x2 = 0; double y2 = 0; double z2 = 0;
-		//    WireposReverse(signalNN_X_2_cut[i],signalNN_Y_2_cut[i],&layerID_re,&theta_re);
-		//    WireposEP(layerID_re,theta_re,&x,&y,&z);
-		//    WireposEP2(layerID_re,theta_re,&x2,&y2,&z2);
-		//    signalNN_layerID.push_back(layerID_re);
-		//    signalNN_theta.push_back(theta_re);
-		//    signalNN_X_2_cutEP.push_back(x);
-                //    signalNN_Y_2_cutEP.push_back(y);
-                //    signalNN_Z_2_cutEP.push_back(z);
-                //    signalNN_X_2_cutEP2.push_back(x2); 
-                //    signalNN_Y_2_cutEP2.push_back(y2); 
-                //    signalNN_Z_2_cutEP2.push_back(z2);
-		//}
+                //for(int i=0;i<signalNN_X_2_cut.size();i++){                                                                                                                               
+                //    int layerID_re = 0;                                                                                                                                                   
+                //    double theta_re = 0;                                                                                                                                                  
+                //    double x = 0; double y = 0; double z = 0;                                                                                                                             
+                //    double x2 = 0; double y2 = 0; double z2 = 0;                                                                                                                          
+                //    WireposReverse(x_sig[i],y_sig[i],&layerID_re,&theta_re);                                                                                        
+                //    WireposEP(layerID_re,theta_re,&x,&y,&z);                                                                                                                              
+                //    WireposEP2(layerID_re,theta_re,&x2,&y2,&z2);                                                                                                                          
+                //    signalNN_layerID.push_back(layerID_re);                                                                                                                               
+                //    signalNN_theta.push_back(theta_re);                                                                                                                                   
+                //    signalNN_X_2_cutEP.push_back(x);                                                                                                                                      
+                //    signalNN_Y_2_cutEP.push_back(y);                                                                                                                                      
+                //    signalNN_Z_2_cutEP.push_back(z);                                                                                                                                      
+                //    signalNN_X_2_cutEP2.push_back(x2);                                                                                                                                    
+                //    signalNN_Y_2_cutEP2.push_back(y2);                                                                                                                                    
+                //    signalNN_Z_2_cutEP2.push_back(z2);                                                                                                                                    
+                //}                                                                                                                                                                         
+		for(int i=0;i<signalNN_X_2_cut.size();i++){
+		    int layerID_re = 0;
+		    double theta_re = 0;
+		    double x = 0; double y = 0; double z = 0;
+		    double x2 = 0; double y2 = 0; double z2 = 0;
+		    WireposReverse(signalNN_X_2_cut[i],signalNN_Y_2_cut[i],&layerID_re,&theta_re);
+		    WireposEP(layerID_re,theta_re,&x,&y,&z);
+		    WireposEP2(layerID_re,theta_re,&x2,&y2,&z2);
+		    signalNN_layerID.push_back(layerID_re);
+		    signalNN_theta.push_back(theta_re);
+		    signalNN_X_2_cutEP.push_back(x);
+                    signalNN_Y_2_cutEP.push_back(y);
+                    signalNN_Z_2_cutEP.push_back(z);
+                    signalNN_X_2_cutEP2.push_back(x2); 
+                    signalNN_Y_2_cutEP2.push_back(y2); 
+                    signalNN_Z_2_cutEP2.push_back(z2);
+		}
 
-                //for(int i=0;i<signalNN_X_2_cut.size();i++){
-		//    for(int j=0;j<signalNN_X_2_cut.size();j++){
-		//	if((signalNN_layerID[i]+1 == signalNN_layerID[j]) || (signalNN_layerID[i]-1 == signalNN_layerID[j])){
-		//	    if(signalNN_theta[j]-signalNN_theta[i]>=-0.18 && signalNN_theta[j]-signalNN_theta[i]<0.18){    
-		//		double x_near_i = 0; double y_near_i = 0; double x_near_j = 0; 
-		//		double y_near_j = 0; double z_near = 0;
-		//		LayerInf layerinf3(signalNN_layerID[i]);
-		//	        Lineinf inf1 = {signalNN_X_2_cutEP2[i],signalNN_Y_2_cutEP2[i],signalNN_Z_2_cutEP2[i],
-		//				signalNN_X_2_cutEP[i], signalNN_Y_2_cutEP[i], signalNN_Z_2_cutEP[i],
-		//				signalNN_X_2_cutEP2[j],signalNN_Y_2_cutEP2[j],signalNN_Z_2_cutEP2[j],
-		//				signalNN_X_2_cutEP[j], signalNN_Y_2_cutEP[j], signalNN_Z_2_cutEP[j],
-		//				x_near_i, x_near_j, y_near_i, y_near_j, z_near};
-		//		Distance(&inf1);
-		//		signal_distance_X.push_back((x_near_i+x_near_j)/2.);
-		//		signal_distance_Y.push_back((y_near_i+y_near_j)/2.);
-		//		signal_distance_Z.push_back(z_near);
-		//	    }
-		//	}
-		//    }
-		//}
-                //
-                ////--- Remove hit points using z position
-                //for(int i=0;i<signal_distance_X.size();i++){
-                //    int count_distance = 0;
-                //    for(int j=0;j<signal_distance_X.size();j++){
-                //        if(fabs(signal_distance_X[i]-signal_distance_X[j])<2 && fabs(signal_distance_Y[i]-signal_distance_Y[j])<2 && fabs(signal_distance_Z[i]-signal_distance_Z[j])<20){
-                //            //cout << "IN" << endl;
-                //            count_distance++;
-                //        }
-                //        if(count_distance>7){
-                //            signal_distance_X_cut.push_back(signal_distance_X[i]);
-                //            signal_distance_Y_cut.push_back(signal_distance_Y[i]);
-                //            signal_distance_Z_cut.push_back(signal_distance_Z[i]);
-                //            break;
-                //        }
-                //    } 
-                //}
+                for(int i=0;i<signalNN_X_2_cut.size();i++){
+		    for(int j=0;j<signalNN_X_2_cut.size();j++){
+			if((signalNN_layerID[i]+1 == signalNN_layerID[j]) || (signalNN_layerID[i]-1 == signalNN_layerID[j])){
+			    if(signalNN_theta[j]-signalNN_theta[i]>=-0.18 && signalNN_theta[j]-signalNN_theta[i]<0.18){    
+				double x_near_i = 0; double y_near_i = 0; double x_near_j = 0; 
+				double y_near_j = 0; double z_near = 0;
+				LayerInf layerinf3(signalNN_layerID[i]);
+			        Lineinf inf1 = {signalNN_X_2_cutEP2[i],signalNN_Y_2_cutEP2[i],signalNN_Z_2_cutEP2[i],
+						signalNN_X_2_cutEP[i], signalNN_Y_2_cutEP[i], signalNN_Z_2_cutEP[i],
+						signalNN_X_2_cutEP2[j],signalNN_Y_2_cutEP2[j],signalNN_Z_2_cutEP2[j],
+						signalNN_X_2_cutEP[j], signalNN_Y_2_cutEP[j], signalNN_Z_2_cutEP[j],
+						x_near_i, x_near_j, y_near_i, y_near_j, z_near};
+				Distance(&inf1);
+				signal_distance_X.push_back((x_near_i+x_near_j)/2.);
+				signal_distance_Y.push_back((y_near_i+y_near_j)/2.);
+				signal_distance_Z.push_back(z_near);
+			    }
+			}
+		    }
+		}
+                
+                //--- Remove hit points using z position
+                for(int i=0;i<signal_distance_X.size();i++){
+                    int count_distance = 0;
+                    for(int j=0;j<signal_distance_X.size();j++){
+                        if(fabs(signal_distance_X[i]-signal_distance_X[j])<3.2 && fabs(signal_distance_Y[i]-signal_distance_Y[j])<3.2 && fabs(signal_distance_Z[i]-signal_distance_Z[j])<5){
+                            count_distance++;
+                        }
+                        if(count_distance>3){
+                            signal_distance_X_cut.push_back(signal_distance_X[i]);
+                            signal_distance_Y_cut.push_back(signal_distance_Y[i]);
+                            signal_distance_Z_cut.push_back(signal_distance_Z[i]);
+                            break;
+                        }
+                    } 
+                }
 		
-                for(int i=0;i<signalNN_X_2_cut.size();i++){                                                                                                                               
-                    int layerID_re = 0;                                                                                                                                                   
-                    double theta_re = 0;                                                                                                                                                  
-                    double x = 0; double y = 0; double z = 0;                                                                                                                             
-                    double x2 = 0; double y2 = 0; double z2 = 0;                                                                                                                          
-                    WireposReverse(signalNN_X_2_cut[i],signalNN_Y_2_cut[i],&layerID_re,&theta_re);                                                                                        
-                    WireposEP(layerID_re,theta_re,&x,&y,&z);                                                                                                                              
-                    WireposEP2(layerID_re,theta_re,&x2,&y2,&z2);                                                                                                                          
-                    signalNN_layerID.push_back(layerID_re);                                                                                                                               
-                    signalNN_theta.push_back(theta_re);                                                                                                                                   
-                    signalNN_X_2_cutEP.push_back(x);                                                                                                                                      
-                    signalNN_Y_2_cutEP.push_back(y);                                                                                                                                      
-                    signalNN_Z_2_cutEP.push_back(z);                                                                                                                                      
-                    signalNN_X_2_cutEP2.push_back(x2);                                                                                                                                    
-                    signalNN_Y_2_cutEP2.push_back(y2);                                                                                                                                    
-                    signalNN_Z_2_cutEP2.push_back(z2);                                                                                                                                    
-                }                                                                                                                                                                         
-                                                                                                                                                                                          
-                for(int i=0;i<signalNN_X_2_cut.size();i++){                                                                                                                               
-                    for(int j=0;j<signalNN_X_2_cut.size();j++){                                                                                                                           
-                	if((signalNN_layerID[i]+1 == signalNN_layerID[j]) || (signalNN_layerID[i]-1 == signalNN_layerID[j])){                                                               
-                	    if(signalNN_theta[j]-signalNN_theta[i]>=-0.18 && signalNN_theta[j]-signalNN_theta[i]<0.18){                                                                     
-                		double x_near_i = 0; double y_near_i = 0; double x_near_j = 0;                                                                                              
-                		double y_near_j = 0; double z_near = 0;                                                                                                                     
-                		LayerInf layerinf3(signalNN_layerID[i]);                                                                                                                    
-                	        Lineinf inf1 = {signalNN_X_2_cutEP2[i],signalNN_Y_2_cutEP2[i],signalNN_Z_2_cutEP2[i],                                                                       
-                				signalNN_X_2_cutEP[i], signalNN_Y_2_cutEP[i], signalNN_Z_2_cutEP[i],                                                                        
-                				signalNN_X_2_cutEP2[j],signalNN_Y_2_cutEP2[j],signalNN_Z_2_cutEP2[j],                                                                       
-                				signalNN_X_2_cutEP[j], signalNN_Y_2_cutEP[j], signalNN_Z_2_cutEP[j],                                                                        
-                				x_near_i, x_near_j, y_near_i, y_near_j, z_near};                                                                                            
-                		Distance(&inf1);                                                                                                                                            
-                		signal_distance_X.push_back((x_near_i+x_near_j)/2.);                                                                                                        
-                		signal_distance_Y.push_back((y_near_i+y_near_j)/2.);                                                                                                        
-                		signal_distance_Z.push_back(z_near);                                                                                                                        
-                	    }                                                                                                                                                               
-                	}                                                                                                                                                                   
-                    }                                                                                                                                                                     
-                }                                                                                                                                                                         
-                                                                                                                                                                                          
-                //--- Remove hit points using z position                                                                                                                                  
-                for(int i=0;i<signal_distance_X.size();i++){                                                                                                                              
-                    int count_distance = 0;                                                                                                                                               
-                    for(int j=0;j<signal_distance_X.size();j++){                                                                                                                          
-                        if(fabs(signal_distance_X[i]-signal_distance_X[j])<2 && fabs(signal_distance_Y[i]-signal_distance_Y[j])<2 && fabs(signal_distance_Z[i]-signal_distance_Z[j])<20){ 
-                            //cout << "IN" << endl;                                                                                                                                       
-                            count_distance++;                                                                                                                                             
-                        }                                                                                                                                                                 
-                        if(count_distance>7){                                                                                                                                             
-                            signal_distance_X_cut.push_back(signal_distance_X[i]);                                                                                                        
-                            signal_distance_Y_cut.push_back(signal_distance_Y[i]);                                                                                                        
-                            signal_distance_Z_cut.push_back(signal_distance_Z[i]);                                                                                                        
-                            break;                                                                                                                                                        
-                        }                                                                                                                                                                 
-                    }                                                                                                                                                                     
-                }                                                                                                                                                                         
 
                 //--------------------------------------------------------------------------------------------------------------//
 		
@@ -676,11 +667,11 @@ int main(int argc, char** argv){
 		gyz->GetXaxis()->SetTitle("Z [cm]");
 		gyz->GetYaxis()->SetTitle("Y [cm]");
 
-		//TGraph* gyz_sig = new TGraph(CDCcell_x->size(), &CDCcell_z->front(), &CDCcell_y->front());
-                //gyz_sig->Draw("p,same");
-		//gyz_sig->SetMarkerStyle(3);
-		//gyz_sig->SetMarkerSize(0.4);
-		//gyz_sig->SetMarkerColor(2);
+		TGraph* gyz_sig = new TGraph(CDCcell_x_signal.size(), &CDCcell_z_signal[0], &CDCcell_y_signal[0]);
+                gyz_sig->Draw("p,same");
+		gyz_sig->SetMarkerStyle(3);
+		gyz_sig->SetMarkerSize(0.4);
+		gyz_sig->SetMarkerColor(2);
 
                 c8->cd();
 		TGraph* gsigNN2_Zcut = new TGraph(signal_distance_X_cut.size(),&signal_distance_Z_cut[0],&signal_distance_Y_cut[0]);
