@@ -50,9 +50,9 @@ int main(int argc, char** argv){
     vector<double>* CDCcell_x = 0;
     vector<double>* CDCcell_y = 0;
     vector<double>* CDCcell_z = 0;
-    vector<int>* CDCcell_layerID = 0;
-    vector<int>* CDCcell_cellID = 0;
-    vector<int>* CDCcell_hittype = 0;
+    vector<int>*    CDCcell_layerID = 0;
+    vector<int>*    CDCcell_cellID = 0;
+    vector<int>*    CDCcell_hittype = 0;
     vector<double>* CDCcell_edep = 0;
     vector<double>* CDCcell_px = 0;
     vector<double>* CDCcell_py = 0;
@@ -354,7 +354,6 @@ int main(int argc, char** argv){
                 double countsig_4 = 0.;
                 double countsig_5 = 0.;
 
-		cout << "signalsize is " << x_sig.size() << endl;
 		
 		for(int i=0;i<x_sig.size();i++){                                                                   
                     for(int j=0;j<x_02.size();j++){                                                          
@@ -392,13 +391,13 @@ int main(int argc, char** argv){
                     }                                                                                                                      
                 }
 
-		double countbg = signalNN_X_cut.size() - countsig;
+		double countbg   = signalNN_X_cut.size() - countsig;
 		double countbg_2 = signalNN_X_2_cut.size() - countsig_2;
 		double countbg_3 = signalNN_X.size() - countsig_3;
 		double countbg_4 = signal_distance_X_cut.size() - countsig_4;
                 double countbg_5 = x_02.size() - countsig_5;
 
-		double efficiency = (countsig/x_sig.size())*100.; 
+		double efficiency   = (countsig/x_sig.size())*100.; 
 		double efficiency_2 = (countsig_2/x_sig.size())*100.;
 		double efficiency_3 = (countsig_3/x_sig.size())*100.;
 		double efficiency_4 = (countsig_4/x_sig.size())*100.;
@@ -409,60 +408,53 @@ int main(int argc, char** argv){
 		double noise_reduction_4 = 100. - (countbg_4/x_bg.size())*100.;
 		double noise_reduction_5 = 100. - (countbg_5/x_bg.size())*100.;
 
-		cout << "-------" << endl;
-                cout << "After cross cut, Efficiency is" << efficiency_5 << endl;
-		cout << "NOfHit: " << x_02.size() << endl;
-		cout << "Noise reductoin rate is " << noise_reduction_5 << endl;
-                cout << "signal vs noise = " << countsig_5 << ":" << countbg_5 << endl;
-		cout << "-------" << endl;
-		cout << "-------" << endl;
-		cout << "After NN, Efficiency is:" << efficiency_3 << " [%] " << endl;
-		cout << "NOfhit is " << signalNN_X.size() << endl;
-		cout << "Noise reduction rate is " << noise_reduction_3 << " [%] " << endl;
-		cout << "signal vs noise = " << countsig_3 << ":" << countbg_3 << endl; 
-                cout << "-------" << endl;
-		cout << "--------" << endl; 
-		cout << "In 1st density cut, Efficiency is:" << efficiency << " [%] " << endl;
-	        cout << "NOfHit is " << signalNN_X_cut.size() << endl;   
-		cout << "Noise reduction rate is " << noise_reduction << " [%] " << endl;
-	        cout << "signal vs noise = " << countsig << ":" << countbg << endl; 	
-                cout << "--------" << endl;
-		cout << "--------" << endl;                                             
-		cout << "In 2nd density cut, Efficiency is:" << efficiency_2 << " [%] " << endl;  
-		cout << "NOfHit is " << signalNN_X_2_cut.size() << endl;    
-		cout << "Noise reduction rate is " << noise_reduction_2 << " [%] " << endl;                                  
-		cout << "signal vs noise = " << countsig_2 << ":" << countbg_2 << endl; 
-                cout << "--------" << endl;
-                cout << "--------" << endl;                                                                                   
-                cout << "In z cut, Efficiency is:" << efficiency_4 << " [%] " << endl;                                      
-                cout << "NOfHit is " << signal_distance_X_cut.size() << endl;                                                      
-                cout << "Noise reduction rate is " << noise_reduction_4 << " [%] " << endl;                                   
-                cout << "signal vs noise = " << countsig_4 << ":" << countbg_4 << endl; 
-                cout << "--------" << endl;                                                                                   
-
 
 		//--- conditions of 'success'
 		if(efficiency_2>=50. && (countsig_2/countbg_2)>=2.){
 		    count_efficiency++;
 		}
-                //if(efficiency_2>=50.){
-	        //    count_efficiency++;
-		//}
 		
+                cout << "signalsize is " << x_sig.size() << endl;
+                cout << "------------------------------------------------------------------" << endl;                                                                                   
+                cout << "After cross cut, Efficiency is" << efficiency_5 << endl;
+		cout << "NOfHit: " << x_02.size() << endl;
+		cout << "Noise reductoin rate is " << noise_reduction_5 << endl;
+                cout << "signal vs noise = " << countsig_5 << ":" << countbg_5 << endl;
+                cout << "------------------------------------------------------------------" << endl;                                                                                   
+                cout << "------------------------------------------------------------------" << endl;                                                                                   
+		cout << "After NN, Efficiency is:" << efficiency_3 << " [%] " << endl;
+		cout << "NOfhit is " << signalNN_X.size() << endl;
+		cout << "Noise reduction rate is " << noise_reduction_3 << " [%] " << endl;
+		cout << "signal vs noise = " << countsig_3 << ":" << countbg_3 << endl; 
+                cout << "------------------------------------------------------------------" << endl;                                                                                   
+                cout << "------------------------------------------------------------------" << endl;                                                                                   
+		cout << "In 1st density cut, Efficiency is:" << efficiency << " [%] " << endl;
+	        cout << "NOfHit is " << signalNN_X_cut.size() << endl;   
+		cout << "Noise reduction rate is " << noise_reduction << " [%] " << endl;
+	        cout << "signal vs noise = " << countsig << ":" << countbg << endl; 	
+                cout << "------------------------------------------------------------------" << endl;                                                                                   
+                cout << "------------------------------------------------------------------" << endl;                                                                                   
+		cout << "In 2nd density cut, Efficiency is:" << efficiency_2 << " [%] " << endl;  
+		cout << "NOfHit is " << signalNN_X_2_cut.size() << endl;    
+		cout << "Noise reduction rate is " << noise_reduction_2 << " [%] " << endl;                                  
+		cout << "signal vs noise = " << countsig_2 << ":" << countbg_2 << endl; 
+                cout << "------------------------------------------------------------------" << endl;                                                                                   
+                cout << "------------------------------------------------------------------" << endl;                                                                                   
+                cout << "In z cut, Efficiency is:" << efficiency_4 << " [%] " << endl;                                      
+                cout << "NOfHit is " << signal_distance_X_cut.size() << endl;                                                      
+                cout << "Noise reduction rate is " << noise_reduction_4 << " [%] " << endl;                                   
+                cout << "signal vs noise = " << countsig_4 << ":" << countbg_4 << endl; 
+                cout << "------------------------------------------------------------------" << endl;                                                                                   
+		cout << "======================================" << endl;
 		cout << endl;
 		cout << "Finally," << endl;
 		cout << "number of events 80 [%] over :" << count_efficiency << endl;
 		cout << "signal vs noise = " << countsig_4 << ":" << countbg_4 << endl;
 		cout << "======================================" << endl;
 		
-		//findingefficiency[a] = efficiency_2;
-
-		//h1->Fill(pt[a]);
-		
 		//--------------------------------------------------------------------------------------------------------------// 
 		
 		//--- clear vectors
-		
 		//x_0.clear(); 
 		//y_0.clear(); 
 		//z_0.clear(); 
@@ -703,7 +695,9 @@ int main(int argc, char** argv){
     //c6->Update();
     c7->Update();
     c8->Update();
-    app.Run(); } 
+    app.Run();
+   
+} 
 
 
     
