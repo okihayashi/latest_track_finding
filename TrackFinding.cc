@@ -39,8 +39,8 @@ int main(int argc, char** argv){
     TCanvas* c2 = new TCanvas("c2","c2",10,10,800,800);
     TCanvas* c3 = new TCanvas("c3","c3",1000,10,800,800); 
     TCanvas* c4 = new TCanvas("c4","c4",10,500,800,800);  
-    TCanvas* c5 = new TCanvas("c5","c5",100,10,800,800);  
-    TCanvas* c6 = new TCanvas("c6","c6",10,50,800,800);   
+    //TCanvas* c5 = new TCanvas("c5","c5",100,10,800,800);  
+    //TCanvas* c6 = new TCanvas("c6","c6",10,50,800,800);   
     TCanvas* c7 = new TCanvas("c7","c7",30,40,800,600);
     TCanvas* c8 = new TCanvas("c8","c8",40,40,800,600); 
 
@@ -225,20 +225,23 @@ int main(int argc, char** argv){
 		
 		//--- Introduce 3D information ---------------------------------------------------------------------------------// 
                 
-                vector<double>       signalNN_X_2_cutEP;
-                vector<double>       signalNN_Y_2_cutEP;
-	       	vector<double>       signalNN_Z_2_cutEP;
-		vector<double>       signalNN_X_2_cutEP2; 
-		vector<double>       signalNN_Y_2_cutEP2; 
-		vector<double>       signalNN_Z_2_cutEP2; 
-		vector<int>          signalNN_layerID;
-                vector<double>       signalNN_theta;
-		vector<double>       signal_distance_X;
-		vector<double>       signal_distance_Y;
-		vector<double>       signal_distance_Z;
-                vector<double>       signal_distance_X_cut; 
-                vector<double>       signal_distance_Y_cut; 
-                vector<double>       signal_distance_Z_cut; 
+                vector<double>   signalNN_X_2_cutEP;
+                vector<double>   signalNN_Y_2_cutEP;
+	       	vector<double>   signalNN_Z_2_cutEP;
+		vector<double>   signalNN_X_2_cutEP2; 
+		vector<double>   signalNN_Y_2_cutEP2; 
+		vector<double>   signalNN_Z_2_cutEP2; 
+		vector<int>      signalNN_layerID;
+                vector<double>   signalNN_theta;
+		vector<double>   signal_distance_X;
+		vector<double>   signal_distance_Y;
+		vector<double>   signal_distance_Z;
+                vector<double>   signal_distance_X_cut; 
+                vector<double>   signal_distance_Y_cut; 
+                vector<double>   signal_distance_Z_cut;
+                vector<double>   signal_distance_X_cluster;
+                vector<double>   signal_distance_Y_cluster;
+                vector<double>   signal_distance_Z_cluster; 
                 vector<TVector2> signal_distance_origin_X;
                 vector<TVector2> signal_distance_origin_Y;
 		
@@ -313,9 +316,27 @@ int main(int argc, char** argv){
                             count_distance++;
                         }
                         if(count_distance>10){
-                            signal_distance_X_cut.push_back(signal_distance_X[i]);
-                            signal_distance_Y_cut.push_back(signal_distance_Y[i]);
-                            signal_distance_Z_cut.push_back(signal_distance_Z[i]);
+                            signal_distance_X_cluster.push_back(signal_distance_X[i]);
+                            signal_distance_Y_cluster.push_back(signal_distance_Y[i]);
+                            signal_distance_Z_cluster.push_back(signal_distance_Z[i]);
+                            bool flag_i = 0;
+                            bool flag_j = 0;
+                            for(int k=0;k<signal_distance_X_cut.size();k++){
+                                if(fabs(signal_distance_X_cut[k]-signal_distance_origin_X[i].X())<DBL_EPSILON && fabs(signal_distance_Y_cut[k]-signal_distance_origin_Y[i].X())<DBL_EPSILON){
+                                    flag_i = 1;
+                                }
+                                if(fabs(signal_distance_X_cut[k]-signal_distance_origin_X[i].Y())<DBL_EPSILON && fabs(signal_distance_Y_cut[k]-signal_distance_origin_Y[i].Y())<DBL_EPSILON){
+                                    flag_j = 1;
+                                }
+                            }
+                            if(!flag_i){
+                                signal_distance_X_cut.push_back(signal_distance_origin_X[i].X());
+                                signal_distance_Y_cut.push_back(signal_distance_origin_Y[i].X());
+                            }
+                            if(!flag_j){
+                                signal_distance_X_cut.push_back(signal_distance_origin_X[i].Y());
+                                signal_distance_Y_cut.push_back(signal_distance_origin_Y[i].Y());
+                            }
                             break;
                         }
                     } 
@@ -329,32 +350,38 @@ int main(int argc, char** argv){
 		double count3 = 0.;
 		double count3_2 = 0.;
 		double count3_3 = 0.;
+                double count3_4 = 0.;
 
 		cout << "signalsize is " << x_sig.size() << endl;
 		
 		for(int i=0;i<x_sig.size();i++){                                            
 		    for(int j=0;j<signalNN_X.size();j++){                               
-			if(x_sig[i] == signalNN_X[j] && y_sig[i] == signalNN_Y[j]){ 
+			if(fabs(x_sig[i]-signalNN_X[j])<DBL_EPSILON && fabs(y_sig[i]-signalNN_Y[j])<DBL_EPSILON){ 
 			    count3_3++;                                                       
 			}                                                                   
 		    }                                                                       
 		}                                                                          
-		
 		for(int i=0;i<x_sig.size();i++){
 		    for(int j=0;j<signalNN_X_cut.size();j++){
-			if(x_sig[i] == signalNN_X_cut[j] && y_sig[i] == signalNN_Y_cut[j]){
+                        if(fabs(x_sig[i]-signalNN_X_cut[j])<DBL_EPSILON && fabs(y_sig[i]-signalNN_Y_cut[j])<DBL_EPSILON){
 			    count3++;
 			}
 		    }
 		}
-		
 		for(int i=0;i<x_sig.size();i++){                                             
 		    for(int j=0;j<signalNN_X_2_cut.size();j++){                                    
-			if(x_sig[i] == signalNN_X_2_cut[j] && y_sig[i] == signalNN_Y_2_cut[j]){          
+			if(fabs(x_sig[i]-signalNN_X_2_cut[j])<DBL_EPSILON && fabs(y_sig[i]-signalNN_Y_2_cut[j])<DBL_EPSILON){          
 			    count3_2++;                                                        
 			}                                                                    
 		    }                                                                        
 		}                                                                            
+                for(int i=0;i<x_sig.size();i++){                                                                                           
+                    for(int j=0;j<signalNN_X_2_cut.size();j++){                                                                            
+                	if(fabs(x_sig[i]-signal_distance_X_cut[j])<DBL_EPSILON && fabs(y_sig[i]-signal_distance_Y_cut[j])<DBL_EPSILON){           
+                	    count3_4++;                                                                                                    
+                	}                                                                                                                  
+                    }                                                                                                                      
+                }
 
 		double count4 = signalNN_X_cut.size() - count3;
 		double count4_2 = signalNN_X_2_cut.size() - count3_2;
@@ -363,7 +390,8 @@ int main(int argc, char** argv){
 		double efficiency = (count3/double(x_sig.size()))*100.; 
 		double efficiency_2 = (count3_2/x_sig.size())*100.;
 		double efficiency_3 = (count3_3/x_sig.size())*100.;
-		double noise_reduction = 100. - (count4/x_bg.size())*100.;
+		double efficiency_4 = (count3_4/x_sig.size())*100.;
+                double noise_reduction = 100. - (count4/x_bg.size())*100.;
 		double noise_reduction_2 = 100. - (count4_2/x_bg.size())*100.;
 		double noise_reduction_3 = 100. - (count4_3/x_bg.size())*100.;
 		
@@ -372,24 +400,27 @@ int main(int argc, char** argv){
 		cout << "After searching crossing point, NOfHit: " << x_02.size() << endl;
 		cout << "Noise reductoin rate is " << 100. - (x_02.size()/CDCcell_nHits)*100. << endl;
 		cout << "-------" << endl;
-		
 		cout << "-------" << endl;
 		cout << "After NN, Efficiency is:" << efficiency_3 << " [%] " << endl;
 		cout << "NOfhit is " << signalNN_X.size() << endl;
 		cout << "Noise reduction rate is " << noise_reduction_3 << " [%] " << endl;
 		cout << "-------" << endl;
-
 		cout << "--------" << endl; 
 		cout << "In 1st NN after cut, Efficiency is:" << efficiency << " [%] " << endl;
 	        cout << "NOfHit is " << signalNN_X_cut.size() << endl;   
 		cout << "Noise reduction rate is " << noise_reduction << " [%] " << endl;
 		cout << "--------" << endl;
-
 		cout << "--------" << endl;                                             
 		cout << "In 2nd cut, Efficiency is:" << efficiency_2 << " [%] " << endl;  
 		cout << "NOfHit is " << signalNN_X_2_cut.size() << endl;    
 		cout << "Noise reduction rate is " << noise_reduction_2 << " [%] " << endl;                                  
-		cout << "--------" << endl;                                            
+		cout << "--------" << endl;
+                cout << "--------" << endl;                                                                                   
+                cout << "In z cut, Efficiency is:" << efficiency_4 << " [%] " << endl;                                      
+                cout << "NOfHit is " << signal_distance_X_cut.size() << endl;                                                      
+                //cout << "Noise reduction rate is " << noise_reduction_2 << " [%] " << endl;                                   
+                cout << "--------" << endl;                                                                                   
+
 
 		//--- modify the conditions of 'success'
 		if(efficiency_2>=50. && (count3_2/count4_2)>=2.){
@@ -443,7 +474,10 @@ int main(int argc, char** argv){
                 //signal_distance_Z.clear();  
                 //signal_distance_X_cut.clear(); 
                 //signal_distance_Y_cut.claer(); 
-                //signal_distance_Z_cut.clear(); 
+                //signal_distance_Z_cut.clear();
+                //signal_distance_X_cluster.clear(); 
+                //signal_distance_Y_cluster.clear(); 
+                //signal_distance_Z_cluster.clear(); 
                 //signalNN_X_2_cutEP2.clear();  
                 //signalNN_Y_2_cutEP2.clear();  
                 //signalNN_Z_2_cutEP2.clear();  
@@ -452,10 +486,12 @@ int main(int argc, char** argv){
 		//--- drawing --------------------------------------------------------------------------------------------------// 
 		
 		c2->cd();                                                                        
+                c2->Divide(2,2);
+                c2->cd(1);
 		//TGraph* gsigNN = new TGraph(signalNN_X.size(), &signalNN_X[0], &signalNN_Y[0]);  
 		TGraph* gsigNN = new TGraph(x_02.size(), &x_02[0], &y_02[0]);   
 		gsigNN->Draw("ap");                                                          
-		gsigNN->SetMarkerStyle(4);                                                       
+		gsigNN->SetMarkerStyle(7);                                                       
 		gsigNN->SetMarkerSize(0.3);                                                      
 		gsigNN->SetMarkerColor(4);                                                       
 		//gsigNN->SetTitle("after 1st NN");
@@ -465,8 +501,9 @@ int main(int argc, char** argv){
 		gsigNN->SetMaximum(90);
 		gsigNN->SetMinimum(-90);
 		gsigNN->GetXaxis()->SetLimits(-90,90);
-		
-		c3->cd();                                                       
+		DrawDetector();
+
+		c2->cd(2);                                                       
 		//TGraph* gcut = new TGraph(x_02.size(), &x_02[0], &y_02[0]);  
 		//gcut->Draw("p,same");                                           
 		//gcut->SetMarkerStyle(4);                                        
@@ -476,7 +513,7 @@ int main(int argc, char** argv){
 		//TGraph* gsig = new TGraph(CDCcell_x_signal.size(), &CDCcell_x_signal[0], &CDCcell_y_signal[0]);  
 		TGraph* gsig = new TGraph(x_sig.size(), &x_sig[0], &y_sig[0]);
 		gsig->Draw("ap");                                           
-		gsig->SetMarkerStyle(4);                                        
+		gsig->SetMarkerStyle(7);                                        
 		gsig->SetMarkerSize(0.3);                                       
 		gsig->SetMarkerColor(2);                                        
 		//gsig->SetTitle("noise 9%");
@@ -489,14 +526,15 @@ int main(int argc, char** argv){
 
 		TGraph* gbg = new TGraph(x_bg.size(), &x_bg[0], &y_bg[0]);      
 		gbg->Draw("p,same");                                            
-		gbg->SetMarkerStyle(4);                                         
+		gbg->SetMarkerStyle(7);                                         
 		gbg->SetMarkerSize(0.3);                                        
 		gbg->SetMarkerColor(4);                                         
+                DrawDetector();
 
-		c4->cd();
+		c2->cd(3);
 		TGraph* gsigNN2 = new TGraph(signalNN_X.size(), &signalNN_X[0], &signalNN_Y[0]);   
 		gsigNN2->Draw("ap");                                                                 
-		gsigNN2->SetMarkerStyle(4);                                                              
+		gsigNN2->SetMarkerStyle(7);                                                              
 		gsigNN2->SetMarkerSize(0.3);                                                             
 		gsigNN2->SetMarkerColor(4);                                                              
 		gsigNN2->SetTitle("after NN");
@@ -505,25 +543,26 @@ int main(int argc, char** argv){
 		gsigNN2->SetMaximum(90);                 
 		gsigNN2->SetMinimum(-90);                
 		gsigNN2->GetXaxis()->SetLimits(-90,90);  
+                DrawDetector();
 
-		c5->cd();                                                                                 
-		TGraph* gsigNN_cut = new TGraph(signalNN_X_cut.size(), &signalNN_X_cut[0], &signalNN_Y_cut[0]);    
-		gsigNN_cut->Draw("ap");                                                                  
-		gsigNN_cut->SetMarkerStyle(4);                                                               
-		gsigNN_cut->SetMarkerSize(0.3);                                                              
-		gsigNN_cut->SetMarkerColor(4);                                                               
-		//gsigNN_cut->SetTitle("after 1st NN cut");
-		gsigNN_cut->SetTitle(0);
-		gsigNN_cut->GetXaxis()->SetTitle("X [cm]");  
-		gsigNN_cut->GetYaxis()->SetTitle("Y [cm]");  
-		gsigNN_cut->SetMaximum(90);                  
-		gsigNN_cut->SetMinimum(-90);                 
-		gsigNN_cut->GetXaxis()->SetLimits(-90,90);   
+		//c5->cd();                                                                                 
+		//TGraph* gsigNN_cut = new TGraph(signalNN_X_cut.size(), &signalNN_X_cut[0], &signalNN_Y_cut[0]);    
+		//gsigNN_cut->Draw("ap");                                                                  
+		//gsigNN_cut->SetMarkerStyle(4);                                                               
+		//gsigNN_cut->SetMarkerSize(0.3);                                                              
+		//gsigNN_cut->SetMarkerColor(4);                                                               
+		////gsigNN_cut->SetTitle("after 1st NN cut");
+		//gsigNN_cut->SetTitle(0);
+		//gsigNN_cut->GetXaxis()->SetTitle("X [cm]");  
+		//gsigNN_cut->GetYaxis()->SetTitle("Y [cm]");  
+		//gsigNN_cut->SetMaximum(90);                  
+		//gsigNN_cut->SetMinimum(-90);                 
+		//gsigNN_cut->GetXaxis()->SetLimits(-90,90);   
 		
-		c6->cd();                                                                                 
+		c2->cd(4);                                                                                 
 		TGraph* gsigNN2_cut = new TGraph(signalNN_X_2_cut.size(), &signalNN_X_2_cut[0], &signalNN_Y_2_cut[0]);    
 		gsigNN2_cut->Draw("ap");                                                                  
-		gsigNN2_cut->SetMarkerStyle(8);                                                               
+		gsigNN2_cut->SetMarkerStyle(7);                                                               
 		gsigNN2_cut->SetMarkerSize(0.4);                                                              
 		gsigNN2_cut->SetMarkerColor(4);                                                               
 		//gsigNN2_cut->SetTitle("after 2nd NN cut: Result");
@@ -560,16 +599,46 @@ int main(int argc, char** argv){
 		gyz_sig->SetMarkerColor(2);
 
                 c8->cd();
-		TGraph* gsigNN2_Zcut = new TGraph(signal_distance_X_cut.size(),&signal_distance_Z_cut[0],&signal_distance_Y_cut[0]);
-		gsigNN2_Zcut->Draw("ap");
-		gsigNN2_Zcut->SetMarkerStyle(7);
-		gsigNN2_Zcut->SetMarkerSize(0.4);
-		gsigNN2_Zcut->SetMarkerColor(4);
-		gsigNN2_Zcut->SetMaximum(90);                 
-                gsigNN2_Zcut->SetMinimum(-90);                
-                gsigNN2_Zcut->GetXaxis()->SetLimits(-80,80);  
-                gsigNN2_Zcut->GetXaxis()->SetTitle("Z [cm]"); 
-                gsigNN2_Zcut->GetYaxis()->SetTitle("Y [cm]"); 
+		TGraph* gsigNN2_Zcluster = new TGraph(signal_distance_X_cluster.size(),&signal_distance_Z_cluster[0],&signal_distance_Y_cluster[0]);
+		gsigNN2_Zcluster->Draw("ap");
+		gsigNN2_Zcluster->SetMarkerStyle(7);
+		gsigNN2_Zcluster->SetMarkerSize(0.4);
+		gsigNN2_Zcluster->SetMarkerColor(4);
+		gsigNN2_Zcluster->SetMaximum(90);                 
+                gsigNN2_Zcluster->SetMinimum(-90);                
+                gsigNN2_Zcluster->GetXaxis()->SetLimits(-80,80);  
+                gsigNN2_Zcluster->GetXaxis()->SetTitle("Z [cm]"); 
+                gsigNN2_Zcluster->GetYaxis()->SetTitle("Y [cm]"); 
+
+                c3->cd();                                                                                
+                TGraph* g_zcut = new TGraph(signal_distance_X_cut.size(), &signal_distance_X_cut[0], &signal_distance_Y_cut[0]);          
+                g_zcut->Draw("ap");                                                                      
+                g_zcut->SetMarkerStyle(4);                                                               
+                g_zcut->SetMarkerSize(0.3);                                                              
+                g_zcut->SetMarkerColor(4);                                                               
+                g_zcut->SetTitle("after z cut");                                                            
+                g_zcut->GetXaxis()->SetTitle("X [cm]");                                                  
+                g_zcut->GetYaxis()->SetTitle("Y [cm]");                                                  
+                g_zcut->SetMaximum(90);                                                                  
+                g_zcut->SetMinimum(-90);                                                                 
+                g_zcut->GetXaxis()->SetLimits(-90,90);                                                   
+                DrawDetector();     
+
+                c4->cd();                                                                                                 
+                TGraph* gsigNN2_cut2 = new TGraph(signalNN_X_2_cut.size(), &signalNN_X_2_cut[0], &signalNN_Y_2_cut[0]);     
+                gsigNN2_cut2->Draw("ap");                                                                                   
+                gsigNN2_cut2->SetMarkerStyle(4);                                                                            
+                gsigNN2_cut2->SetMarkerSize(0.4);                                                                           
+                gsigNN2_cut2->SetMarkerColor(4);                                                                            
+                //gsigNN2_cut2->SetTitle("after 2nd NN cut: Result");                                                       
+                gsigNN2_cut2->SetTitle(0);                                                                                  
+                gsigNN2_cut2->GetXaxis()->SetTitle("X [cm]");                                                               
+                gsigNN2_cut2->GetYaxis()->SetTitle("Y [cm]");                                                               
+                gsigNN2_cut2->SetMaximum(90);                                                                               
+                gsigNN2_cut2->SetMinimum(-90);                                                                              
+                gsigNN2_cut2->GetXaxis()->SetLimits(-90,90);                                                                
+                DrawDetector();
+
     	    //}
 	    CDCcell_x_signal.clear();
 	    CDCcell_y_signal.clear();
@@ -611,8 +680,8 @@ int main(int argc, char** argv){
     c2->Update();
     c3->Update();
     c4->Update();
-    c5->Update();
-    c6->Update();
+    //c5->Update();
+    //c6->Update();
     c7->Update();
     c8->Update();
     app.Run(); } 
