@@ -37,8 +37,8 @@ int main(int argc, char** argv){
 
     //TCanvas* c1 = new TCanvas("c1","c1",10,10,800,800);               
     TCanvas* c2 = new TCanvas("c2","c2",10,10,800,800);
-    TCanvas* c3 = new TCanvas("c3","c3",1000,10,800,800); 
-    TCanvas* c4 = new TCanvas("c4","c4",10,500,800,800);  
+    TCanvas* c3 = new TCanvas("c3","c3",1000,10,1200,600); 
+    //TCanvas* c4 = new TCanvas("c4","c4",10,500,800,800);  
     //TCanvas* c5 = new TCanvas("c5","c5",100,10,800,800);  
     //TCanvas* c6 = new TCanvas("c6","c6",10,50,800,800);   
     TCanvas* c7 = new TCanvas("c7","c7",30,40,800,600);
@@ -138,7 +138,8 @@ int main(int argc, char** argv){
 	    //if(pz[a]>=40 && pz[a]<50){
 		cout << "eventNO:" << count_NOfEvent << endl;
 		count_NOfEvent++;
-		//--- first cut (search crossing hit wires in adjacent layer)---------------------------------------------------//
+		
+                //--- first cut (search crossing hit wires in adjacent layer)---------------------------------------------------//
 		
 		vector<double> x_0;		   //--* x-coordinate of hit wire                                                     
 		vector<double> y_0;                //--* y-coordinate of hit wire                                                     
@@ -188,7 +189,7 @@ int main(int argc, char** argv){
 		vector<double> signalNN_Y_2;       //--* y-coordinate of hits selected by 2nd neural network(not use now)  
 	   
 		//---NN Parameter is {NOfStep, lambda, a, b, alpha, beta, C, T, V_ij_threshold, distance_cut, angle_cut}
-		NNParameter param1 = {50000, 1., 0.1, 0.1, 10., 0., 10, 0.1, 0.8, 5., 0.1};
+		NNParameter param1 = {500000, 1., 1., 1., 10., 10., 10, 1., 0.8, 6., 0.1};
 		NeuralNet(&x_02, &y_02, &signalNN_X, &signalNN_Y, &param1);
 		
 		vector<double> signalNN_X_cut;     //--* x-coordinate of hits path through the density cut
@@ -347,95 +348,111 @@ int main(int argc, char** argv){
 		
 		//--- count signal and noise hits to calculate efficiency ------------------------------------------------------//
 
-		double count3 = 0.;
-		double count3_2 = 0.;
-		double count3_3 = 0.;
-                double count3_4 = 0.;
+		double countsig = 0.;
+		double countsig_2 = 0.;
+		double countsig_3 = 0.;
+                double countsig_4 = 0.;
+                double countsig_5 = 0.;
 
 		cout << "signalsize is " << x_sig.size() << endl;
 		
-		for(int i=0;i<x_sig.size();i++){                                            
+		for(int i=0;i<x_sig.size();i++){                                                                   
+                    for(int j=0;j<x_02.size();j++){                                                          
+                	if(fabs(x_sig[i]-x_02[j])<DBL_EPSILON && fabs(y_sig[i]-y_02[j])<DBL_EPSILON){  
+                	    countsig_5++;                                                                          
+                	}                                                                                          
+                    }                                                                                              
+                }                                                                                                  
+                for(int i=0;i<x_sig.size();i++){                                            
 		    for(int j=0;j<signalNN_X.size();j++){                               
 			if(fabs(x_sig[i]-signalNN_X[j])<DBL_EPSILON && fabs(y_sig[i]-signalNN_Y[j])<DBL_EPSILON){ 
-			    count3_3++;                                                       
+			    countsig_3++;                                                       
 			}                                                                   
 		    }                                                                       
 		}                                                                          
 		for(int i=0;i<x_sig.size();i++){
 		    for(int j=0;j<signalNN_X_cut.size();j++){
                         if(fabs(x_sig[i]-signalNN_X_cut[j])<DBL_EPSILON && fabs(y_sig[i]-signalNN_Y_cut[j])<DBL_EPSILON){
-			    count3++;
+			    countsig++;
 			}
 		    }
 		}
 		for(int i=0;i<x_sig.size();i++){                                             
 		    for(int j=0;j<signalNN_X_2_cut.size();j++){                                    
 			if(fabs(x_sig[i]-signalNN_X_2_cut[j])<DBL_EPSILON && fabs(y_sig[i]-signalNN_Y_2_cut[j])<DBL_EPSILON){          
-			    count3_2++;                                                        
+			    countsig_2++;                                                        
 			}                                                                    
 		    }                                                                        
 		}                                                                            
                 for(int i=0;i<x_sig.size();i++){                                                                                           
                     for(int j=0;j<signalNN_X_2_cut.size();j++){                                                                            
                 	if(fabs(x_sig[i]-signal_distance_X_cut[j])<DBL_EPSILON && fabs(y_sig[i]-signal_distance_Y_cut[j])<DBL_EPSILON){           
-                	    count3_4++;                                                                                                    
+                	    countsig_4++;                                                                                                    
                 	}                                                                                                                  
                     }                                                                                                                      
                 }
 
-		double count4 = signalNN_X_cut.size() - count3;
-		double count4_2 = signalNN_X_2_cut.size() - count3_2;
-		double count4_3 = signalNN_X.size() - count3_3;
-		
-		double efficiency = (count3/double(x_sig.size()))*100.; 
-		double efficiency_2 = (count3_2/x_sig.size())*100.;
-		double efficiency_3 = (count3_3/x_sig.size())*100.;
-		double efficiency_4 = (count3_4/x_sig.size())*100.;
-                double noise_reduction = 100. - (count4/x_bg.size())*100.;
-		double noise_reduction_2 = 100. - (count4_2/x_bg.size())*100.;
-		double noise_reduction_3 = 100. - (count4_3/x_bg.size())*100.;
-		
-		
+		double countbg = signalNN_X_cut.size() - countsig;
+		double countbg_2 = signalNN_X_2_cut.size() - countsig_2;
+		double countbg_3 = signalNN_X.size() - countsig_3;
+		double countbg_4 = signal_distance_X_cut.size() - countsig_4;
+                double countbg_5 = x_02.size() - countsig_5;
+
+		double efficiency = (countsig/x_sig.size())*100.; 
+		double efficiency_2 = (countsig_2/x_sig.size())*100.;
+		double efficiency_3 = (countsig_3/x_sig.size())*100.;
+		double efficiency_4 = (countsig_4/x_sig.size())*100.;
+                double efficiency_5 = (countsig_5/x_sig.size())*100.;
+                double noise_reduction = 100. - (countbg/x_bg.size())*100.;
+		double noise_reduction_2 = 100. - (countbg_2/x_bg.size())*100.;
+		double noise_reduction_3 = 100. - (countbg_3/x_bg.size())*100.;
+		double noise_reduction_4 = 100. - (countbg_4/x_bg.size())*100.;
+		double noise_reduction_5 = 100. - (countbg_5/x_bg.size())*100.;
+
 		cout << "-------" << endl;
-		cout << "After searching crossing point, NOfHit: " << x_02.size() << endl;
-		cout << "Noise reductoin rate is " << 100. - (x_02.size()/CDCcell_nHits)*100. << endl;
+                cout << "After cross cut, Efficiency is" << efficiency_5 << endl;
+		cout << "NOfHit: " << x_02.size() << endl;
+		cout << "Noise reductoin rate is " << noise_reduction_5 << endl;
+                cout << "signal vs noise = " << countsig_5 << ":" << countbg_5 << endl;
 		cout << "-------" << endl;
 		cout << "-------" << endl;
 		cout << "After NN, Efficiency is:" << efficiency_3 << " [%] " << endl;
 		cout << "NOfhit is " << signalNN_X.size() << endl;
 		cout << "Noise reduction rate is " << noise_reduction_3 << " [%] " << endl;
-		cout << "-------" << endl;
+		cout << "signal vs noise = " << countsig_3 << ":" << countbg_3 << endl; 
+                cout << "-------" << endl;
 		cout << "--------" << endl; 
-		cout << "In 1st NN after cut, Efficiency is:" << efficiency << " [%] " << endl;
+		cout << "In 1st density cut, Efficiency is:" << efficiency << " [%] " << endl;
 	        cout << "NOfHit is " << signalNN_X_cut.size() << endl;   
 		cout << "Noise reduction rate is " << noise_reduction << " [%] " << endl;
-		cout << "--------" << endl;
+	        cout << "signal vs noise = " << countsig << ":" << countbg << endl; 	
+                cout << "--------" << endl;
 		cout << "--------" << endl;                                             
-		cout << "In 2nd cut, Efficiency is:" << efficiency_2 << " [%] " << endl;  
+		cout << "In 2nd density cut, Efficiency is:" << efficiency_2 << " [%] " << endl;  
 		cout << "NOfHit is " << signalNN_X_2_cut.size() << endl;    
 		cout << "Noise reduction rate is " << noise_reduction_2 << " [%] " << endl;                                  
-		cout << "--------" << endl;
+		cout << "signal vs noise = " << countsig_2 << ":" << countbg_2 << endl; 
+                cout << "--------" << endl;
                 cout << "--------" << endl;                                                                                   
                 cout << "In z cut, Efficiency is:" << efficiency_4 << " [%] " << endl;                                      
                 cout << "NOfHit is " << signal_distance_X_cut.size() << endl;                                                      
-                //cout << "Noise reduction rate is " << noise_reduction_2 << " [%] " << endl;                                   
+                cout << "Noise reduction rate is " << noise_reduction_4 << " [%] " << endl;                                   
+                cout << "signal vs noise = " << countsig_4 << ":" << countbg_4 << endl; 
                 cout << "--------" << endl;                                                                                   
 
 
-		//--- modify the conditions of 'success'
-		if(efficiency_2>=50. && (count3_2/count4_2)>=2.){
+		//--- conditions of 'success'
+		if(efficiency_2>=50. && (countsig_2/countbg_2)>=2.){
 		    count_efficiency++;
 		}
                 //if(efficiency_2>=50.){
 	        //    count_efficiency++;
 		//}
 		
-		
-		
 		cout << endl;
 		cout << "Finally," << endl;
 		cout << "number of events 80 [%] over :" << count_efficiency << endl;
-		cout << "signal vs noise = " << count3_2 << ":" << count4_2 << endl;
+		cout << "signal vs noise = " << countsig_4 << ":" << countbg_4 << endl;
 		cout << "======================================" << endl;
 		
 		//findingefficiency[a] = efficiency_2;
@@ -610,7 +627,9 @@ int main(int argc, char** argv){
                 gsigNN2_Zcluster->GetXaxis()->SetTitle("Z [cm]"); 
                 gsigNN2_Zcluster->GetYaxis()->SetTitle("Y [cm]"); 
 
-                c3->cd();                                                                                
+                c3->cd();
+                c3->Divide(2,1);
+                c3->cd(2);                
                 TGraph* g_zcut = new TGraph(signal_distance_X_cut.size(), &signal_distance_X_cut[0], &signal_distance_Y_cut[0]);          
                 g_zcut->Draw("ap");                                                                      
                 g_zcut->SetMarkerStyle(4);                                                               
@@ -624,14 +643,14 @@ int main(int argc, char** argv){
                 g_zcut->GetXaxis()->SetLimits(-90,90);                                                   
                 DrawDetector();     
 
-                c4->cd();                                                                                                 
+                c3->cd(1);                                                                                                 
                 TGraph* gsigNN2_cut2 = new TGraph(signalNN_X_2_cut.size(), &signalNN_X_2_cut[0], &signalNN_Y_2_cut[0]);     
                 gsigNN2_cut2->Draw("ap");                                                                                   
                 gsigNN2_cut2->SetMarkerStyle(4);                                                                            
                 gsigNN2_cut2->SetMarkerSize(0.4);                                                                           
                 gsigNN2_cut2->SetMarkerColor(4);                                                                            
                 //gsigNN2_cut2->SetTitle("after 2nd NN cut: Result");                                                       
-                gsigNN2_cut2->SetTitle(0);                                                                                  
+                gsigNN2_cut2->SetTitle("before z cut");                                                                                   
                 gsigNN2_cut2->GetXaxis()->SetTitle("X [cm]");                                                               
                 gsigNN2_cut2->GetYaxis()->SetTitle("Y [cm]");                                                               
                 gsigNN2_cut2->SetMaximum(90);                                                                               
@@ -679,7 +698,7 @@ int main(int argc, char** argv){
     //c1->Update();
     c2->Update();
     c3->Update();
-    c4->Update();
+    //c4->Update();
     //c5->Update();
     //c6->Update();
     c7->Update();

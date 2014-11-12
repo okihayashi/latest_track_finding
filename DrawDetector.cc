@@ -37,7 +37,7 @@ void DrawDetector(){
 	if(i == 0){
 	    g[i]->Draw("p,same");
             g[i]->SetMarkerStyle(5);  
-            g[i]->SetMarkerSize(0.2); 
+            g[i]->SetMarkerSize(0.1); 
             g[i]->SetMarkerColor(17); 
 	    //g[i]->GetXaxis()->SetLimits(-90,90);
 	    //g[i]->SetMinimum(-90);
