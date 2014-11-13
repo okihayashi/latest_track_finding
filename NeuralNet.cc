@@ -77,35 +77,6 @@ void NeuralNet(vector<double> *x, vector<double> *y, vector<double> *signalX, ve
 			double theta_ln = acos((x->at(n-1)-x->at(l-1))/d_ln);
 			double theta_kln = theta_ln - theta_kl;
 			if(fabs(theta_kln)<angle_cut){
-			    //--- Calculate T_kln
-			    //double A = (x->at(l-1)-x->at(k-1))/(y->at(l-1)-y->at(k-1));
-			    //double B = (x->at(l-1)-x->at(k-1))*(x->at(k-1)+x->at(l-1))/(2*(y->at(l-1)-y->at(k-1))) + (y->at(k-1)+y->at(l-1))/2.;
-			    //double C = (x->at(n-1)-x->at(l-1))/(y->at(n-1)-y->at(l-1)); 
-			    //double D = (x->at(n-1)-x->at(l-1))*(x->at(l-1)+x->at(n-1))/(2*(y->at(n-1)-y->at(l-1))) + (y->at(l-1)+y->at(n-1))/2.; 
-			    //double x_center = (B-D)/(A-C);
-			    //double y_center = -A*(B-D)/(A-C) + B;
-			    //double R_kln = sqrt((x->at(k-1)-x_center)*(x->at(k-1)-x_center) + (y->at(k-1)-y_center)*(y->at(k-1)-y_center));
-			    //double R_0 = sqrt(x_center*x_center + y_center*y_center);
-			    //double R_term = 0;
-			    //cout << "xk xl xn = " << x->at(k-1) << " " << x->at(l-1) <<  " " << x->at(n-1) << " " << endl;
-			    //cout << "yk yl yn = " << y->at(k-1) << " " << y->at(l-1) <<  " " << y->at(n-1) << " " << endl; 
-			    //cout << "x-center = " << x_center << " , y_center = " << y_center << endl;
-			    //cout << "R_kln = " << R_kln << endl;
-			    //cout << "R_0 = " << R_0 << endl; 
-			    //cout << "R_0-R_kln = " << fabs(R_0-R_kln) << endl;
-			    
-			    //if(fabs(R_0-R_kln)>0.1){
-			    //    R_term = 1./fabs(R_0-R_kln);
-			    //}
-			    //if(fabs(R_0-R_kln)<0.1){
-			    //    //--- insert some huge number to R_term 
-			    //    R_term = DBL_MAX;
-			    //    
-			    //}
-			    
-			    //cout << "R_term = " << R_term << endl;
-			    //cout << "---------------------" << endl;
-			    //double T_kln = pow(cos(fabs(theta_kln)-theta_tr),lambda)/(pow(d_kl,kl)+pow(d_ln,ln)) + R_term;
 			    double T_kln = pow(cos(fabs(theta_kln)-theta_tr),lambda)/(pow(d_kl,kl)+pow(d_ln,ln)); 
 			    T_klnV_ln += T_kln * V[l][n];
                         }
@@ -147,21 +118,15 @@ void NeuralNet(vector<double> *x, vector<double> *y, vector<double> *signalX, ve
                 	    double R_kln = sqrt((x->at(k-1)-x_center)*(x->at(k-1)-x_center) + (y->at(k-1)-y_center)*(y->at(k-1)-y_center));       
                 	    double R_0 = sqrt(x_center*x_center + y_center*y_center);                                                             
                 	    double R_term = 0;
-                            //cout << "xk xl xn = " << x->at(k-1) << " " << x->at(l-1) <<  " " << x->at(n-1) << " " << endl;                        
-                	    //cout << "yk yl yn = " << y->at(k-1) << " " << y->at(l-1) <<  " " << y->at(n-1) << " " << endl;                        
-                	    //cout << "x-center = " << x_center << " , y_center = " << y_center << endl;                                            
-                	    //cout << "R_kln = " << R_kln << endl;                                                                                  
-                	    //cout << "R_0 = " << R_0 << endl;                                                                                      
-                	    //cout << "R_0-R_kln = " << fabs(R_0-R_kln) << endl;                                                                    
                 	                                                                                                                            
-                	    if(fabs(R_0-R_kln)<1.){                                                                                              
+                	    //if(fabs(R_0-R_kln)<1.){                                                                                              
                 	      R_term = fabs(R_0-R_kln);                                                                                      
-                	    }                                                                                                                     
-                	    if(fabs(R_0-R_kln)>1.){                                                                                              
-                	        //--- insert some huge number to R_term                                                                           
-                	        R_term = DBL_MAX;                                                                                                 
-                	                                                                                                                          
-                	    }                                                                                                                     
+                	    //}                                                                                                                     
+                	    //if(fabs(R_0-R_kln)>1.){                                                                                              
+                	    //    //--- insert some huge number to R_term                                                                           
+                	    //    R_term = DBL_MAX;                                                                                                 
+                	    //                                                                                                                      
+                	    //}                                                                                                                     
                 	                                                                                                                            
                 	    //cout << "R_term = " << R_term << endl;                                                                                
                 	    //cout << "---------------------" << endl;                                                                              
@@ -174,14 +139,16 @@ void NeuralNet(vector<double> *x, vector<double> *y, vector<double> *signalX, ve
 
 		//--- Calculate new V_kl and reset 
 		if(i<NOfStep-1){
-		    double V_kl = 1./2. * (1 + tanh((C/T)*T_klnV_ln - (alpha/T)*(V_kn + V_ml) - (beta/T)*U_klnV_ln)); 
-		    if(V[k][l] < V_kl){
+		    //double V_kl = 1./2. * (1 + tanh((C/T)*T_klnV_ln - (alpha/T)*(V_kn + V_ml) - (beta/T)*U_klnV_ln)); 
+		    double V_kl = tanh((C/T)*T_klnV_ln - (alpha/T)*(V_kn + V_ml) - (beta/T)*U_klnV_ln);  
+                    if(V[k][l] < V_kl){
 			V[k][l] = V_kl;
 		    }	
 		}
 		if(i == NOfStep-1){
-                    double V_kl = 1./2. * (1 + tanh((C/T)*T_klnV_ln - (alpha/T)*(V_kn + V_ml) - (beta/T)*U_klnV_ln)); 
-		    V[k][l] = V_kl;
+                    //double V_kl = 1./2. * (1 + tanh((C/T)*T_klnV_ln - (alpha/T)*(V_kn + V_ml) - (beta/T)*U_klnV_ln)); 
+		    double V_kl = tanh((C/T)*T_klnV_ln - (alpha/T)*(V_kn + V_ml) - (beta/T)*U_klnV_ln);  
+                    V[k][l] = V_kl;
 		}
 		T_klnV_ln = 0;
 		V_kn = 0;
@@ -210,7 +177,7 @@ void NeuralNet(vector<double> *x, vector<double> *y, vector<double> *signalX, ve
         	    if(signalX->size()){
         		int flag1 = 0;
         		for(int k=0;k<signalX->size();k++){
-        		    if(x->at(i-1) == signalX->at(k)){
+        		    if(fabs(x->at(i-1)-signalX->at(k))<DBL_EPSILON){
         			flag1 = 1;
         		    }
         		}
@@ -232,7 +199,7 @@ void NeuralNet(vector<double> *x, vector<double> *y, vector<double> *signalX, ve
         	    if(signalX->size()){
         		int flag2 = 0;
         		for(int l=0;l<signalX->size();l++){
-        		    if(x->at(j-1) == signalX->at(l)){
+        		    if(fabs(x->at(j-1) == signalX->at(l))<DBL_EPSILON){
         			flag2 = 1;
         		    }
         		}

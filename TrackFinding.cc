@@ -46,12 +46,12 @@ int main(int argc, char** argv){
 
     //TH1D* h1 = new TH1D("h1","h1",30,-80,80);
     
-    int CDCcell_nHits;
+    int CDCcell_nHits = 0;
     vector<double>* CDCcell_x = 0;
     vector<double>* CDCcell_y = 0;
     vector<double>* CDCcell_z = 0;
     vector<int>*    CDCcell_layerID = 0;
-    vector<int>*    CDCcell_cellID = 0;
+    vector<int>*    CDCcell_cellID  = 0;
     vector<int>*    CDCcell_hittype = 0;
     vector<double>* CDCcell_edep = 0;
     vector<double>* CDCcell_px = 0;
@@ -70,9 +70,21 @@ int main(int argc, char** argv){
     t->SetBranchAddress("CdcCell_pz",&CDCcell_pz);
     int count_NOfEvent = 0;
     int count_efficiency = 0; 
-    //double findingefficiency[3445] = {};
     double pt[3445] = {};
     double pz[3445] = {};
+
+    //--- Set Neutal net parameters
+    int NN_NOfIteration = 500000;
+    double NN_lambda    = 5.;
+    double NN_a         = 1.;
+    double NN_b         = 1.;
+    double NN_alpha     = 1.;
+    double NN_beta      = 1.;
+    double NN_C         = 10.;
+    double NN_T         = 1.;
+    double NN_Threshold = 0.8;
+    double NN_distance  = 8.;
+    double NN_angle     = 0.1;    
 
     for(int a=0;a<1;a++){
     //for(int a=0;a<t->GetEntries();a++){
@@ -129,8 +141,6 @@ int main(int argc, char** argv){
 		    CDCcell_hittype_cut.push_back(CDCcell_hittype->at(i));
 		}
 	    }
-        
-            CDCcell_nHits = CDCcell_layerID_cut.size();
 
             //if(pz[a]<40 || pz[a]>=50){
 	    //    cout << "---- skip !!! ----" << endl;
@@ -152,7 +162,7 @@ int main(int argc, char** argv){
 		vector<double> x_bg;               //--* x-coordinate of hit wire by noise 
 		vector<double> y_bg;               //--* x-coordinate of hit wire by noise 
                 
-                for(int i=0;i<CDCcell_nHits;i++){
+                for(int i=0;i<CDCcell_layerID_cut.size();i++){
                     double x01 = 0; double y01 = 0;
                     int layerID_up_cross = 0;
                     double theta_up_cross = 0;
@@ -165,7 +175,7 @@ int main(int argc, char** argv){
                         y_bg.push_back(y01);
                     }
                     WireposReverse(x01,y01,&layerID_up_cross,&theta_up_cross);
-                    for(int j=0;j<CDCcell_nHits;j++){
+                    for(int j=0;j<CDCcell_layerID_cut.size();j++){
                         double x02 = 0; double y02 = 0;
                         int layerID_down_cross = 0;
                         double theta_down_cross = 0;
@@ -188,8 +198,8 @@ int main(int argc, char** argv){
 		vector<double> signalNN_X_2;       //--* x-coordinate of hits selected by 2nd neural network(not use now)  
 		vector<double> signalNN_Y_2;       //--* y-coordinate of hits selected by 2nd neural network(not use now)  
 	   
-		//---NN Parameter is {NOfStep, lambda, a, b, alpha, beta, C, T, V_ij_threshold, distance_cut, angle_cut}
-		NNParameter param1 = {500000, 1., 1., 1., 10., 10., 10, 1., 0.8, 6., 0.1};
+		//--- Neural net 
+		NNParameter param1 = {NN_NOfIteration, NN_lambda, NN_a, NN_b, NN_alpha, NN_beta, NN_C, NN_T, NN_Threshold, NN_distance, NN_angle};
 		NeuralNet(&x_02, &y_02, &signalNN_X, &signalNN_Y, &param1);
 		
 		vector<double> signalNN_X_cut;     //--* x-coordinate of hits path through the density cut
@@ -283,7 +293,6 @@ int main(int argc, char** argv){
                     signalNN_Z_2_cutEP2.push_back(z2);
 		}
 
-                int count_ID = 0;
                 for(int i=0;i<signalNN_X_2_cut.size();i++){
 		    for(int j=0;j<signalNN_X_2_cut.size();j++){
 			if((signalNN_layerID[i]+1 == signalNN_layerID[j]) || (signalNN_layerID[i]-1 == signalNN_layerID[j])){
@@ -302,8 +311,6 @@ int main(int argc, char** argv){
                                 signal_distance_X.push_back((x_near_i+x_near_j)/2.);
 				signal_distance_Y.push_back((y_near_i+y_near_j)/2.);
 				signal_distance_Z.push_back(z_near);
-                                cout << "signal_distance_origin_X[" << count_ID << "] = " << signal_distance_origin_X[count_ID].X() << " , " << signal_distance_origin_Y[count_ID].Y() << endl;;
-                                count_ID++;
 			    }
 			}
 		    }
@@ -316,7 +323,7 @@ int main(int argc, char** argv){
                         if(fabs(signal_distance_X[i]-signal_distance_X[j])<5. && fabs(signal_distance_Y[i]-signal_distance_Y[j])<5. && fabs(signal_distance_Z[i]-signal_distance_Z[j])<15){
                             count_distance++;
                         }
-                        if(count_distance>10){
+                        if(count_distance>2){
                             signal_distance_X_cluster.push_back(signal_distance_X[i]);
                             signal_distance_Y_cluster.push_back(signal_distance_Y[i]);
                             signal_distance_Z_cluster.push_back(signal_distance_Z[i]);
@@ -414,9 +421,10 @@ int main(int argc, char** argv){
 		    count_efficiency++;
 		}
 		
+                cout << "Number of Hits is " << CDCcell_layerID_cut.size() << endl;
                 cout << "signalsize is " << x_sig.size() << endl;
                 cout << "------------------------------------------------------------------" << endl;                                                                                   
-                cout << "After cross cut, Efficiency is" << efficiency_5 << endl;
+                cout << "After cross cut, Efficiency is:" << efficiency_5 << endl;
 		cout << "NOfHit: " << x_02.size() << endl;
 		cout << "Noise reductoin rate is " << noise_reduction_5 << endl;
                 cout << "signal vs noise = " << countsig_5 << ":" << countbg_5 << endl;
