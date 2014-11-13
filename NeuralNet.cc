@@ -161,8 +161,8 @@ void NeuralNet(vector<double> *x, vector<double> *y, vector<double> *signalX, ve
     //--- Insert hits that have value over threshold to vector array
     //--- after checking double count 
 
-    int check_i[1000] = {};
-    int check_j[1000] = {};
+    int check_i[2000] = {};
+    int check_j[2000] = {};
 
     for(int i=1;i<Na+1;i++){
         for(int j=1;j<Na+1;j++){
@@ -214,6 +214,5 @@ void NeuralNet(vector<double> *x, vector<double> *y, vector<double> *signalX, ve
             }
         }
     }
-
 }
 
