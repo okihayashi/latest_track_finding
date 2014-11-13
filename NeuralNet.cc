@@ -37,7 +37,7 @@ void NeuralNet(vector<double> *x, vector<double> *y, vector<double> *signalX, ve
     double T_klnV_ln = 0; double V_kn = 0; double V_ml = 0; double V_mn = 0;                  
     double U_klnV_ln = 0;
     double V[1000][1000] = {{}};
-    
+    double U_kln = 0;
     //-- Set random value to all V_xy through distance cut -----------//
     
     for(int i=1;i<NOfHit_cut+1;i++){
@@ -117,8 +117,7 @@ void NeuralNet(vector<double> *x, vector<double> *y, vector<double> *signalX, ve
                 	    double y_center = -A*(B-D)/(A-C) + B;                                                                                 
                 	    double R_kln = sqrt((x->at(k-1)-x_center)*(x->at(k-1)-x_center) + (y->at(k-1)-y_center)*(y->at(k-1)-y_center));       
                 	    double R_0 = sqrt(x_center*x_center + y_center*y_center);                                                             
-                	    double R_term = 0;
-                	                                                                                                                            
+                	    double R_term = 0;                                                                                                                        
                 	    //if(fabs(R_0-R_kln)<1.){                                                                                              
                 	      R_term = fabs(R_0-R_kln);                                                                                      
                 	    //}                                                                                                                     
@@ -132,7 +131,7 @@ void NeuralNet(vector<double> *x, vector<double> *y, vector<double> *signalX, ve
                 	    //cout << "---------------------" << endl;                                                                              
                 	                          
                 	    //double T_kln = pow(cos(fabs(theta_kln)-theta_tr),lambda)/(pow(d_kl,kl)+pow(d_ln,ln));                                   
-                	    U_klnV_ln += R_term * V[l][n];
+                	    U_kln += R_term;
                         }                                                                                                                           
                     }                                                                                                                               
                 }                                                                                                                                   
@@ -140,20 +139,21 @@ void NeuralNet(vector<double> *x, vector<double> *y, vector<double> *signalX, ve
 		//--- Calculate new V_kl and reset 
 		if(i<NOfStep-1){
 		    //double V_kl = 1./2. * (1 + tanh((C/T)*T_klnV_ln - (alpha/T)*(V_kn + V_ml) - (beta/T)*U_klnV_ln)); 
-		    double V_kl = tanh((C/T)*T_klnV_ln - (alpha/T)*(V_kn + V_ml) - (beta/T)*U_klnV_ln);  
+		    double V_kl = tanh((C/T)*T_klnV_ln - (alpha/T)*(V_kn + V_ml) - (beta/T)*U_kln);  
                     if(V[k][l] < V_kl){
 			V[k][l] = V_kl;
 		    }	
 		}
 		if(i == NOfStep-1){
                     //double V_kl = 1./2. * (1 + tanh((C/T)*T_klnV_ln - (alpha/T)*(V_kn + V_ml) - (beta/T)*U_klnV_ln)); 
-		    double V_kl = tanh((C/T)*T_klnV_ln - (alpha/T)*(V_kn + V_ml) - (beta/T)*U_klnV_ln);  
+		    double V_kl = tanh((C/T)*T_klnV_ln - (alpha/T)*(V_kn + V_ml) - (beta/T)*U_kln);
                     V[k][l] = V_kl;
 		}
 		T_klnV_ln = 0;
 		V_kn = 0;
 		V_ml = 0;
 		V_mn = 0;
+                U_kln = 0;
 	    }
 	}
     }
