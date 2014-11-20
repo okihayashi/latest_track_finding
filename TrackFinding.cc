@@ -78,8 +78,8 @@ int main(int argc, char** argv){
     double NN_lambda    = 1.;
     double NN_a         = 1.;
     double NN_b         = 1.;
-    double NN_alpha     = 10.;
-    double NN_beta      = 1000.;
+    double NN_alpha     = 5.;
+    double NN_beta      = 10.;
     double NN_C         = 10.;
     double NN_T         = 1.;
     double NN_Threshold = 0.8;
@@ -321,7 +321,7 @@ int main(int argc, char** argv){
                         if(fabs(signal_distance_X[i]-signal_distance_X[j])<5. && fabs(signal_distance_Y[i]-signal_distance_Y[j])<5. && fabs(signal_distance_Z[i]-signal_distance_Z[j])<15){
                             count_distance++;
                         }
-                        if(count_distance>3){
+                        if(count_distance>2){
                             signal_distance_X_cluster.push_back(signal_distance_X[i]);
                             signal_distance_Y_cluster.push_back(signal_distance_Y[i]);
                             signal_distance_Z_cluster.push_back(signal_distance_Z[i]);
@@ -358,9 +358,8 @@ int main(int argc, char** argv){
 		double countsig_3 = 0.;
                 double countsig_4 = 0.;
                 double countsig_5 = 0.;
-
 		
-		for(int i=0;i<x_sig.size();i++){                                                                   
+                for(int i=0;i<x_sig.size();i++){                                                                   
                     for(int j=0;j<x_02.size();j++){                                                          
                 	if(fabs(x_sig[i]-x_02[j])<DBL_EPSILON && fabs(y_sig[i]-y_02[j])<DBL_EPSILON){  
                 	    countsig_5++;                                                                          
