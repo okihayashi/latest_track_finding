@@ -1,5 +1,5 @@
 //-----------------------------------------------------------//              
-//LayerInf.hh                                                                
+//LayerInf140328.hh                                                                
 //                                                                           
 //This class is used to get some informations of each layers                 
 //You can get                                                                
@@ -16,8 +16,8 @@
 //-----------------------------------------------------------//	             
 
 
-#ifndef LayerInf_HH
-#define LayerInf_HH
+#ifndef LayerInf140238_HH
+#define LayerInf140328_HH
 
 class LayerInf {
     private:

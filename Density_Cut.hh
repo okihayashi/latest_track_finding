@@ -11,8 +11,8 @@
 //	    how_many_hits_you_want_in_the_radius
 //-----------------------------------------------------------//	      
 
-#ifndef CLEANUP_HH
-#define CLEANUP_HH
+#ifndef DENSITY_CUT_HH
+#define DENSITY_CUT_HH
 #include <vector>
 #include <iostream>
 
