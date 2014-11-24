@@ -87,10 +87,10 @@ int main(int argc, char** argv){
     double NN_angle     = 0.1;    
 
     //for(int a=0;a<1;a++){
-    for(int a=0;a<t->GetEntries();a++){
+    for(int iev=0;iev<t->GetEntries();iev++){
 
 	cout << "*****  a = " << a << "  *****" << endl;
-	t->GetEntry(a);
+	t->GetEntry(iev);
 
 	//---check events if the signal exist or not
         int check_event = 0;
@@ -102,6 +102,7 @@ int main(int argc, char** argv){
 	}
 	if(check_event<15){
 	    cout << "---This event do not have any signals---" << endl;
+            continue;
 	}
 	if(check_event>=15){
 	    vector<double> CDCcell_layerID_cut(0);
