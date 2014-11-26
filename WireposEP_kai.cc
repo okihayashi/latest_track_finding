@@ -21,12 +21,12 @@ void WireposEP(int layer, double theta, double *x, double *y, double *z){
     double Radian = 0;
     int N;
 
-    for(int i=0;i<20;i++){
+    for(int i=0;i<18;i++){
 	if(layer == i){
 	    LayerInf layerinf(i);
 	    Radius = layerinf.GetR_EP();
 	    N = layerinf.GetNOfWire();
-            *z = (-1.)*layerinf.Getz_EP();
+            *z = layerinf.Getz_EP();
 	    double NOfSkip = static_cast<double>(layerinf.GetNOfSkip());
 	    //Radian = theta + layerinf.GetInterval() * NOfSkip/2.;
 	    Radian = theta - layerinf.GetInterval() * NOfSkip/2.; 

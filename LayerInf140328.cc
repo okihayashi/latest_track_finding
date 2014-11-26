@@ -21,8 +21,7 @@
 #define PI 3.14159265358979
 LayerInf::LayerInf(int l){
 
-    double r0[20] = {51.1673,
-	             52.7600,
+    double r0[18] = {52.7600,
 	             54.3671,
 		     55.9738,
 		     57.5801,
@@ -39,11 +38,9 @@ LayerInf::LayerInf(int l){
 		     75.1709,
 		     76.7756,
 		     78.3802,
-		     79.9846,
-                     81.5889};            //[cm]
+		     79.9846};            //[cm]
     
-    double rEP[20] = {51.40,
-	              53.00,
+    double rEP[18] = {53.00,
 		      54.60,
 		      56.20,
 		      57.80,
@@ -60,11 +57,9 @@ LayerInf::LayerInf(int l){
 		      75.40,
 		      77.00,
 		      78.60,
-		      80.20,
-		      81.80};
+		      80.20};
     
-    int numberofwire[20] = {396/2,
-	                    396/2,
+    int numberofwire[18] = {396/2,
 	                    408/2,
 			    420/2,
 			    432/2,
@@ -81,17 +76,14 @@ LayerInf::LayerInf(int l){
 			    564/2,
 			    576/2,
 			    588/2,
-			    600/2,
-                            612/2};
+			    600/2};
 
-    double interval[20];                
-    
-    for(int i=0;i<20;i++){
+    double interval[18];                
+    for(int i=0;i<18;i++){
 	interval[i] = 2*PI/numberofwire[i];
     }
 
-    double zEP[20] = {147.6046/2.,
-	              148.1688/2.,
+    double zEP[18] = {148.1688/2.,
 	              148.7331/2.,
 		      149.2973/2.,
 		      149.8616/2.,
@@ -108,13 +100,11 @@ LayerInf::LayerInf(int l){
 		      156.0683/2.,
 		      156.6325/2.,
 		      157.1968/2.,
-		      157.7610/2.,
-                      158.3252/2.};       //[cm]
+		      157.7610/2.};       //[cm]
 
 //This is used to calculate coordinates of the back of EP
 
-    int NOfskippinghole[20] = { 6,
-	                       -6,      
+    int NOfskippinghole[18] = {-6,      
 	                        6,
 			       -6,
 			        6,
@@ -131,8 +121,7 @@ LayerInf::LayerInf(int l){
                                -7,
 			        7,
 			       -7,
-                                7,
-                               -7};
+                                7,};
 
     NOfWire = numberofwire[l];
     Interval = interval[l];

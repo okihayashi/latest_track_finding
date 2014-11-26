@@ -24,12 +24,12 @@ void DrawDetector(){
     double y[18][300];
     TGraph *g[18];
     for(int i=0;i<18;i++){
-	LayerInf layerinf(i+1);
+	LayerInf layerinf(i);
         int N = layerinf.GetNOfWire();
 	for(int j=0;j<N;j++){
 	    x_ep = 0;
             y_ep = 0;
-	    Wirepos0(i+1, j, &x_ep, &y_ep);
+	    Wirepos0(i, j, &x_ep, &y_ep);
             x[i][j] = x_ep;
 	    y[i][j] = y_ep;
 	}

@@ -24,7 +24,7 @@ void WireposReverse(double x, double y, int* layerID, double* theta){
     //*theta = asin(y/sqrt(x*x + y*y));
 
     double delta = 0.0001;
-    for(int i=1;i<20;i++){
+    for(int i=1;i<18;i++){
 	LayerInf layerinf(i);
 	double layer_radius = layerinf.GetR_0();
 	if(fabs(radius - layer_radius) <= delta){

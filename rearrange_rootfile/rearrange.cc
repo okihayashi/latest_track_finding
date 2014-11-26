@@ -80,7 +80,7 @@ int main(int argc, char** argv){
             CDCcell_py.push_back(CdcCell_py->at(a)); 
             CDCcell_pz.push_back(CdcCell_pz->at(a));
             CDCcell_cellID.push_back(CdcCell_cellID->at(a));
-            CDCcell_layerID.push_back(CdcCell_layerID->at(a)+1);
+            CDCcell_layerID.push_back(CdcCell_layerID->at(a));
 	    CDCcell_edep.push_back(CdcCell_edep->at(a));
 	    CDCcell_hittype.push_back(CdcCell_hittype->at(a));
 	}

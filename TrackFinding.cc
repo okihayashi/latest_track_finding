@@ -26,7 +26,7 @@ using namespace std;
 int main(int argc, char** argv){
 
     gROOT->Reset();
-    gROOT->SetBatch();
+    //gROOT->SetBatch();
     gStyle->SetPadGridX(1);
     gStyle->SetPadGridY(1);
     gRandom->SetSeed( time(NULL) );
@@ -79,18 +79,18 @@ int main(int argc, char** argv){
     double NN_a         = 1.;
     double NN_b         = 1.;
     double NN_alpha     = 5.;
-    double NN_beta      = 10.;
+    double NN_beta      = 5.;
     double NN_C         = 10.;
     double NN_T         = 1.;
     double NN_Threshold = 0.8;
     double NN_distance  = 6.;
     double NN_angle     = 0.1;    
 
-    //for(int a=0;a<1;a++){
-    for(int iev=0;iev<t->GetEntries();iev++){
+    for(int iev=0;iev<1;iev++){
+    //for(int iev=0;iev<t->GetEntries();iev++){
 
 	cout << "*****  iev = " << iev << "  *****" << endl;
-	t->GetEntry(iev);
+	t->GetEntry(1);
 
 	//---check events if the signal exist or not
         int check_event = 0;
@@ -460,40 +460,40 @@ int main(int argc, char** argv){
 		//--------------------------------------------------------------------------------------------------------------// 
 		
 		//--- clear vectors
-		x_02.clear();
-		y_02.clear();
-		z_02.clear();
-		x_sig.clear();
-		y_sig.clear();
-		x_bg.clear(); 
-		y_bg.clear(); 
-		signalNN_X.clear(); 
-		signalNN_Y.clear(); 
-		signalNN_X_2.clear();
-		signalNN_Y_2.clear();
-		signalNN_X_cut.clear();
-		signalNN_Y_cut.clear();
-		signalNN_X_2_cut.clear();
-		signalNN_Y_2_cut.clear();
-                signalNN_X_2_cutEP.clear(); 
-                signalNN_Y_2_cutEP.clear(); 
-                signalNN_Z_2_cutEP.clear(); 
-                signalNN_layerID.clear();      
-                signalNN_theta.clear();     
-                signal_distance_X.clear();  
-                signal_distance_Y.clear();  
-                signal_distance_Z.clear();  
-                signal_distance_X_cut.clear(); 
-                signal_distance_Y_cut.clear(); 
-                signal_distance_Z_cut.clear();
-                signal_distance_X_cluster.clear(); 
-                signal_distance_Y_cluster.clear(); 
-                signal_distance_Z_cluster.clear(); 
-                signalNN_X_2_cutEP2.clear();  
-                signalNN_Y_2_cutEP2.clear();  
-                signalNN_Z_2_cutEP2.clear();  
-                signal_distance_origin_X.clear();
-                signal_distance_origin_Y.clear();
+		//x_02.clear();
+		//y_02.clear();
+		//z_02.clear();
+		//x_sig.clear();
+		//y_sig.clear();
+		//x_bg.clear(); 
+		//y_bg.clear(); 
+		//signalNN_X.clear(); 
+		//signalNN_Y.clear(); 
+		//signalNN_X_2.clear();
+		//signalNN_Y_2.clear();
+		//signalNN_X_cut.clear();
+		//signalNN_Y_cut.clear();
+		//signalNN_X_2_cut.clear();
+		//signalNN_Y_2_cut.clear();
+                //signalNN_X_2_cutEP.clear(); 
+                //signalNN_Y_2_cutEP.clear(); 
+                //signalNN_Z_2_cutEP.clear(); 
+                //signalNN_layerID.clear();      
+                //signalNN_theta.clear();     
+                //signal_distance_X.clear();  
+                //signal_distance_Y.clear();  
+                //signal_distance_Z.clear();  
+                //signal_distance_X_cut.clear(); 
+                //signal_distance_Y_cut.clear(); 
+                //signal_distance_Z_cut.clear();
+                //signal_distance_X_cluster.clear(); 
+                //signal_distance_Y_cluster.clear(); 
+                //signal_distance_Z_cluster.clear(); 
+                //signalNN_X_2_cutEP2.clear();  
+                //signalNN_Y_2_cutEP2.clear();  
+                //signalNN_Z_2_cutEP2.clear();  
+                //signal_distance_origin_X.clear();
+                //signal_distance_origin_Y.clear();
 
 
 		//--- drawing --------------------------------------------------------------------------------------------------// 
@@ -643,7 +643,7 @@ int main(int argc, char** argv){
                 TGraph* gsigNN2_cut2 = new TGraph(signalNN_X_2_cut.size(), &signalNN_X_2_cut[0], &signalNN_Y_2_cut[0]);     
                 gsigNN2_cut2->Draw("ap");                                                                                   
                 gsigNN2_cut2->SetMarkerStyle(4);                                                                            
-                gsigNN2_cut2->SetMarkerSize(0.4);                                                                           
+                gsigNN2_cut2->SetMarkerSize(0.3);                                                                           
                 gsigNN2_cut2->SetMarkerColor(4);                                                                            
                 //gsigNN2_cut2->SetTitle("after 2nd NN cut: Result");                                                       
                 gsigNN2_cut2->SetTitle("before z cut");                                                                                   
