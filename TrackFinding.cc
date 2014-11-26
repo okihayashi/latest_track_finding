@@ -89,14 +89,14 @@ int main(int argc, char** argv){
     //for(int a=0;a<1;a++){
     for(int iev=0;iev<t->GetEntries();iev++){
 
-	cout << "*****  a = " << a << "  *****" << endl;
+	cout << "*****  iev = " << iev << "  *****" << endl;
 	t->GetEntry(iev);
 
 	//---check events if the signal exist or not
         int check_event = 0;
 	
-	for(int b=0;b<CDCcell_nHits;b++){
-	    if(CDCcell_hittype->at(b) == 0){
+	for(int i=0;i<CDCcell_nHits;i++){
+	    if(CDCcell_hittype->at(i) == 0){
 		check_event++;
 	    }
 	}
@@ -127,10 +127,10 @@ int main(int argc, char** argv){
 	    }	
 
             //--- Calculate pt
-	    pt[a] = sqrt(CDCcell_px_signal.at(1)*CDCcell_px_signal.at(1)*1e6 + CDCcell_py_signal.at(1)*CDCcell_py_signal.at(1)*1e6);
-            pz[a] = CDCcell_pz_signal.at(1)*1e3;
-            cout << "pt = " << pt[a] << " MeV" << endl;
-            cout << "pz = " << pz[a] << " MeV" << endl;
+	    pt[iev] = sqrt(CDCcell_px_signal.at(1)*CDCcell_px_signal.at(1)*1e6 + CDCcell_py_signal.at(1)*CDCcell_py_signal.at(1)*1e6);
+            pz[iev] = CDCcell_pz_signal.at(1)*1e3;
+            cout << "pt = " << pt[iev] << " MeV" << endl;
+            cout << "pz = " << pz[iev] << " MeV" << endl;
 	    
 	    //--- ADC cut
 	    for(int i=0;i<CDCcell_nHits;i++){

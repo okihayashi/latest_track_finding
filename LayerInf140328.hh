@@ -16,8 +16,8 @@
 //-----------------------------------------------------------//	             
 
 
-#ifndef LayerInf140238_HH
-#define LayerInf140328_HH
+#ifndef LAYERINF140328_HH
+#define LAYERINF140328_HH
 
 class LayerInf {
     private:
