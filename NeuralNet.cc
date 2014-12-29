@@ -20,21 +20,21 @@
 using namespace std;
 void NeuralNet(vector<double> *x, vector<double> *y, vector<double> *signalX, vector<double> *signalY, NNParameter* param){
 
-    int NOfHit_cut = x->size();
     int k,l;                                                              
-    int NOfStep = param->NumberofStep;;                                  
+    const int NOfHit_cut = x->size();
+    const int NOfStep = param->NumberofStep;;                                  
     double theta_tr = 4.90416971470373081e-02*2.;                       
-    double Na = NOfHit_cut;                                               
-    double lambda    = param->lambda1;                                      
-    double kl        = param->a;                                                
-    double ln        = param->b;                                                
-    double alpha     = param->alpha1;                                        
-    double beta      = param->beta1;                                          
-    double C         = param->C1;                                                
-    double T         = param->Temperature;                                       
-    double threshold = param->threshold;                          
-    double R_cut     = param->distance_cut;           
-    double angle_cut = param->A_cut;              
+    const double Na = NOfHit_cut;                                               
+    const double lambda    = param->lambda1;                                      
+    const double kl        = param->a;                                                
+    const double ln        = param->b;                                                
+    const double alpha     = param->alpha1;                                        
+    const double beta      = param->beta1;                                          
+    const double C         = param->C1;                                                
+    const double T         = param->Temperature;                                       
+    const double threshold = param->threshold;                          
+    const double R_cut     = param->distance_cut;           
+    const double angle_cut = param->A_cut;              
     double T_klnV_ln = 0; double V_kn = 0; double V_ml = 0; double V_mn = 0;                  
     double U_klnV_ln = 0;
     double V[1000][1000] = {{}};
@@ -164,18 +164,19 @@ void NeuralNet(vector<double> *x, vector<double> *y, vector<double> *signalX, ve
                 
                 //--- Calculate R_0
                 if(i == NOfStep*(3/4)){
+                    cout << "i = " << i << endl;
                     for(int ii=0;ii<Na+1;ii++){
                         for(int jj=0;jj<Na+1;jj++){
                             for(int nn=0;nn<Na+1;nn++){
                                 if(ii != jj && jj != nn && nn != ii && V[ii][jj]>0.8 && V[jj][ii]>0.8 && V[jj][nn]>0.8 && V[nn][jj]>0.8){
                                     count_segment++;
-                                    double A = (x->at(jj-1)-x->at(ii-1))/(y->at(jj-1)-y->at(ii-1));                                                                                
-                                    double B = (x->at(jj-1)-x->at(ii-1))*(x->at(ii-1)+x->at(jj-1))/(2*(y->at(jj-1)-y->at(ii-1))) + (y->at(ii-1)+y->at(jj-1))/2.;                       
-                                    double C = (x->at(nn-1)-x->at(jj-1))/(y->at(nn-1)-y->at(jj-1));                                                                                
-                                    double D = (x->at(nn-1)-x->at(jj-1))*(x->at(jj-1)+x->at(nn-1))/(2*(y->at(nn-1)-y->at(jj-1))) + (y->at(jj-1)+y->at(nn-1))/2.;                       
-                                    double x_center = (B-D)/(A-C);                                                                                                             
-                                    double y_center = -A*(B-D)/(A-C) + B;                                                                                                      
-                                    double R_0 = sqrt(x_center*x_center + y_center*y_center);                                                                                  
+                                    double A = (x->at(jj-1)-x->at(ii-1))/(y->at(jj-1)-y->at(ii-1));  
+                                    double B = (x->at(jj-1)-x->at(ii-1))*(x->at(ii-1)+x->at(jj-1))/(2*(y->at(jj-1)-y->at(ii-1))) + (y->at(ii-1)+y->at(jj-1))/2.; 
+                                    double C = (x->at(nn-1)-x->at(jj-1))/(y->at(nn-1)-y->at(jj-1));  
+                                    double D = (x->at(nn-1)-x->at(jj-1))*(x->at(jj-1)+x->at(nn-1))/(2*(y->at(nn-1)-y->at(jj-1))) + (y->at(jj-1)+y->at(nn-1))/2.; 
+                                    double x_center = (B-D)/(A-C); 
+                                    double y_center = -A*(B-D)/(A-C) + B; 
+                                    double R_0 = sqrt(x_center*x_center + y_center*y_center); 
 
                                     R_sum += R_0;
                                 }
@@ -185,7 +186,7 @@ void NeuralNet(vector<double> *x, vector<double> *y, vector<double> *signalX, ve
                     R_0 = R_sum/count_segment;
                     cout << "R_0 = " << R_0 << endl;
                 }
-                if(i >= NOfStep*(3/4)){
+                if(i > NOfStep*(3/4)){
                     //--- calculate beta term which related to vertex constraint (added in 12th Nov. 2014)                                                                
                     for(int n=1;n<Na+1;n++){                                                                                                                              
                         if(n == l || k == n){                                                                                                                             
@@ -234,8 +235,6 @@ void NeuralNet(vector<double> *x, vector<double> *y, vector<double> *signalX, ve
                 //    double V_kl = tanh((C/T)*T_klnV_ln - (alpha/T)*(V_kn + V_ml) - (beta/T)*U_kln);                      
                 //    V[k][l] = V_kl;                                                                                      
                 //}                                                                                                        
-
-
 
                 T_klnV_ln = 0;
 		V_kn = 0;

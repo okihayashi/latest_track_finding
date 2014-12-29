@@ -1,5 +1,6 @@
 #include <iostream>
 #include <sstream>
+#include <time.h>
 #include <math.h>
 #include <TGraph.h>
 #include <TGraph2D.h>
@@ -32,11 +33,14 @@ int main(int argc, char** argv){
     gStyle->SetPadGridY(1);
     gRandom->SetSeed( time(NULL) );
 
+    clock_t time_start = 0;
+    clock_t time_end = 0;
+    time_start = clock();
     TApplication app("app", &argc, argv);
     TFile* file = new TFile("/Users/hayashi_oki/Workspace/Track-finding/Helix/NN/Data/signal.140905M02.noise-3.root");
     TTree* t = (TTree*)file->Get("tree");
 
-    //TCanvas* c1 = new TCanvas("c1","c1",10,10,800,800);               
+    TCanvas* c1 = new TCanvas("c1","c1",10,10,800,800);               
     TCanvas* c2 = new TCanvas("c2","c2",10,10,800,800);
     TCanvas* c3 = new TCanvas("c3","c3",1000,10,1200,600); 
     //TCanvas* c4 = new TCanvas("c4","c4",10,500,800,800);  
@@ -75,14 +79,14 @@ int main(int argc, char** argv){
     double pz[3445] = {};
 
     //--- Set Neutal net parameters
-    double a = 0.;
+    double a = 6.;
     istringstream str(argv[1]);
     str >> a;
-    int NN_NOfIteration = 100000;
+    int NN_NOfIteration = 500000;
     double NN_lambda    = 1.;
     double NN_a         = 1.;
     double NN_b         = 1.;
-    double NN_alpha     = 5.;
+    double NN_alpha     = 10.;
     double NN_beta      = 5.;
     double NN_C         = 10.;
     double NN_T         = 1.;
@@ -105,7 +109,7 @@ int main(int argc, char** argv){
 	    }
 	}
 	if(check_event<15){
-	    cout << "---This event do not have any signals---" << endl;
+	    //cout << "---This event do not have any signals---" << endl;
             continue;
 	}
 	if(check_event>=15){
@@ -133,8 +137,8 @@ int main(int argc, char** argv){
             //--- Calculate pt
 	    pt[iev] = sqrt(CDCcell_px_signal.at(1)*CDCcell_px_signal.at(1)*1e6 + CDCcell_py_signal.at(1)*CDCcell_py_signal.at(1)*1e6);
             pz[iev] = CDCcell_pz_signal.at(1)*1e3;
-            cout << "pt = " << pt[iev] << " MeV" << endl;
-            cout << "pz = " << pz[iev] << " MeV" << endl;
+            //cout << "pt = " << pt[iev] << " MeV" << endl;
+            //cout << "pz = " << pz[iev] << " MeV" << endl;
 	    
 	    //--- ADC cut
 	    for(int i=0;i<CDCcell_nHits;i++){
@@ -151,7 +155,7 @@ int main(int argc, char** argv){
 	    //    cout << "---- skip !!! ----" << endl;
 	    //}
 	    //if(pz[a]>=40 && pz[a]<50){
-		cout << "eventNO:" << count_NOfEvent << endl;
+		//cout << "eventNO:" << count_NOfEvent << endl;
 		count_NOfEvent++;
 		
                 //--- first cut (search crossing hit wires in adjacent layer)---------------------------------------------------//
@@ -212,7 +216,7 @@ int main(int argc, char** argv){
 		    Density_Cut(&signalNN_X, &signalNN_Y, &signalNN_X_cut, &signalNN_Y_cut, 20., 15);
 		}else{
 		    //--- if number of hits is not so large, density cut will be not applied
-		    cout << "No more cuts apply" << endl; 
+		    //cout << "No more cuts apply" << endl; 
 		    signalNN_X_cut = signalNN_X;
 		    signalNN_Y_cut = signalNN_Y;
 		}
@@ -229,7 +233,7 @@ int main(int argc, char** argv){
 		    Density_Cut(&signalNN_X_cut,&signalNN_Y_cut, &signalNN_X_2_cut, &signalNN_Y_2_cut, 40., 30);
 		}else{
 		    //--- if number of hits is not so large, density cut will be not applied 
-		    cout << "No cut is applied in 2nd density cut" << endl;
+		    //cout << "No cut is applied in 2nd density cut" << endl;
 		    signalNN_X_2_cut = signalNN_X_cut;
 		    signalNN_Y_2_cut = signalNN_Y_cut;
 		}
@@ -258,23 +262,23 @@ int main(int argc, char** argv){
                 vector<TVector2> signal_distance_origin_X(0);
                 vector<TVector2> signal_distance_origin_Y(0);
 		
-                //for(int i=0;i<signalNN_X_2_cut.size();i++){                                                                                                                               
-                //    int layerID_re = 0;                                                                                                                                                   
-                //    double theta_re = 0;                                                                                                                                                  
-                //    double x = 0; double y = 0; double z = 0;                                                                                                                             
-                //    double x2 = 0; double y2 = 0; double z2 = 0;                                                                                                                          
-                //    WireposReverse(x_sig[i],y_sig[i],&layerID_re,&theta_re);                                                                                        
-                //    WireposEP(layerID_re,theta_re,&x,&y,&z);                                                                                                                              
-                //    WireposEP2(layerID_re,theta_re,&x2,&y2,&z2);                                                                                                                          
-                //    signalNN_layerID.push_back(layerID_re);                                                                                                                               
-                //    signalNN_theta.push_back(theta_re);                                                                                                                                   
-                //    signalNN_X_2_cutEP.push_back(x);                                                                                                                                      
-                //    signalNN_Y_2_cutEP.push_back(y);                                                                                                                                      
-                //    signalNN_Z_2_cutEP.push_back(z);                                                                                                                                      
-                //    signalNN_X_2_cutEP2.push_back(x2);                                                                                                                                    
-                //    signalNN_Y_2_cutEP2.push_back(y2);                                                                                                                                    
-                //    signalNN_Z_2_cutEP2.push_back(z2);                                                                                                                                    
-                //}                                                                                                                                                                         
+                //for(int i=0;i<signalNN_X_2_cut.size();i++){ 
+                //    int layerID_re = 0; 
+                //    double theta_re = 0; 
+                //    double x = 0; double y = 0; double z = 0; 
+                //    double x2 = 0; double y2 = 0; double z2 = 0; 
+                //    WireposReverse(x_sig[i],y_sig[i],&layerID_re,&theta_re); 
+                //    WireposEP(layerID_re,theta_re,&x,&y,&z); 
+                //    WireposEP2(layerID_re,theta_re,&x2,&y2,&z2); 
+                //    signalNN_layerID.push_back(layerID_re); 
+                //    signalNN_theta.push_back(theta_re); 
+                //    signalNN_X_2_cutEP.push_back(x); 
+                //    signalNN_Y_2_cutEP.push_back(y); 
+                //    signalNN_Z_2_cutEP.push_back(z);   
+                //    signalNN_X_2_cutEP2.push_back(x2); 
+                //    signalNN_Y_2_cutEP2.push_back(y2); 
+                //    signalNN_Z_2_cutEP2.push_back(z2); 
+                //}  
                 
                 //--- transform. (x,y) to (layerID, theta)
 		for(int i=0;i<signalNN_X_2_cut.size();i++){
@@ -502,9 +506,27 @@ int main(int argc, char** argv){
 
 		//--- drawing --------------------------------------------------------------------------------------------------// 
 		
-		c2->cd();                                                                        
+		c1->cd();                                                                           
+                //c1->Divide(1,1);                                                                    
+                //c1->cd(1);                                                                          
+                //TGraph* gsigNN = new TGraph(signalNN_X.size(), &signalNN_X[0], &signalNN_Y[0]);   
+                TGraph* gevent = new TGraph(CDCcell_x->size(), &CDCcell_x->front(), &CDCcell_y->front());                       
+                gevent->Draw("ap");                                                                 
+                gevent->SetMarkerStyle(7);                                                          
+                gevent->SetMarkerSize(0.3);                                                         
+                gevent->SetMarkerColor(6);                                                          
+                //gevent->SetTitle("after 1st NN");                                                 
+                gevent->SetTitle(0);                                                                
+                gevent->GetXaxis()->SetTitle("X [cm]");                                             
+                gevent->GetYaxis()->SetTitle("Y [cm]");                                             
+                gevent->SetMaximum(90);                                                             
+                gevent->SetMinimum(-90);                                                            
+                gevent->GetXaxis()->SetLimits(-90,90);                                              
+                DrawDetector();                                                                     
+                
+                c2->cd();                                                                        
                 c2->Divide(2,2);
-                c2->cd(1);
+                c2->cd(2);
 		//TGraph* gsigNN = new TGraph(signalNN_X.size(), &signalNN_X[0], &signalNN_Y[0]);  
 		TGraph* gsigNN = new TGraph(x_02.size(), &x_02[0], &y_02[0]);   
 		gsigNN->Draw("ap");                                                          
@@ -520,7 +542,7 @@ int main(int argc, char** argv){
 		gsigNN->GetXaxis()->SetLimits(-90,90);
 		DrawDetector();
 
-		c2->cd(2);                                                       
+		c2->cd(1);                                                       
 		//TGraph* gcut = new TGraph(x_02.size(), &x_02[0], &y_02[0]);  
 		//gcut->Draw("p,same");                                           
 		//gcut->SetMarkerStyle(4);                                        
@@ -580,7 +602,7 @@ int main(int argc, char** argv){
 		TGraph* gsigNN2_cut = new TGraph(signalNN_X_2_cut.size(), &signalNN_X_2_cut[0], &signalNN_Y_2_cut[0]);    
 		gsigNN2_cut->Draw("ap");                                                                  
 		gsigNN2_cut->SetMarkerStyle(7);                                                               
-		gsigNN2_cut->SetMarkerSize(0.4);                                                              
+		gsigNN2_cut->SetMarkerSize(0.3);                                                              
 		gsigNN2_cut->SetMarkerColor(4);                                                               
 		//gsigNN2_cut->SetTitle("after 2nd NN cut: Result");
 		gsigNN2_cut->SetTitle(0);
@@ -589,13 +611,14 @@ int main(int argc, char** argv){
 		gsigNN2_cut->SetMaximum(90);                  
 		gsigNN2_cut->SetMinimum(-90);                 
 		gsigNN2_cut->GetXaxis()->SetLimits(-90,90);   
-
-                TGraph* gdis = new TGraph(signal_distance_X.size(), &signal_distance_X[0], &signal_distance_Y[0]);
-		gdis->Draw("p,same");
-		gdis->SetMarkerStyle(3);
-		gdis->SetMarkerSize(0.3);
-		gdis->SetMarkerColor(6);
                 DrawDetector();
+
+                //TGraph* gdis = new TGraph(signal_distance_X.size(), &signal_distance_X[0], &signal_distance_Y[0]);
+		//gdis->Draw("p,same");
+		//gdis->SetMarkerStyle(3);
+		//gdis->SetMarkerSize(0.3);
+		//gdis->SetMarkerColor(6);
+                //DrawDetector();
 
 		c7->cd();
 		TGraph* gyz = new TGraph(signal_distance_X.size(), &signal_distance_Z[0], &signal_distance_Y[0]);
@@ -671,11 +694,16 @@ int main(int argc, char** argv){
 	}
     }
 
+    time_end = clock();
     double Result = count_efficiency/double(count_NOfEvent+1);
     double error = sqrt(count_efficiency)/double(count_NOfEvent+1);
     cout << "**----------------------------**" << endl;
     cout << "Result: " << Result << "± " << error << endl;
+    cout << " -----------------------------" << endl;
+    cout << "Event number is " << t->GetEntries() << endl;
+    cout << "Computing time is " << double(time_end-time_start)/CLOCKS_PER_SEC << " [s]" << endl;
     cout << "**----------------------------**" << endl; 
+    
     //TGraph* geff = new TGraph(3445, pt, findingefficiency);
     //c1->cd();
     //geff->Draw("ap");
@@ -695,7 +723,7 @@ int main(int argc, char** argv){
     //h1->SetTitle(0);
     //h1->GetXaxis()->SetTitle("z [cm]");
 
-    //c1->Update();
+    c1->Update();
     c2->Update();
     c3->Update();
     //c4->Update();
@@ -704,7 +732,6 @@ int main(int argc, char** argv){
     c7->Update();
     c8->Update();
     app.Run();
-   
 } 
 
 

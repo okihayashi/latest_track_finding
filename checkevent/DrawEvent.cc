@@ -93,13 +93,13 @@ void DrawEvent(){
     
     //for(int a=0;a<t->GetEntries();i++){
     for(int a=0;a<1;a++){
-	t->GetEntry(1);
+	t->GetEntry(0);
 	
 	int count_signal = 0;
 	for(int i=0;i<CDCcell_nHits;i++){
-	    if(CDCcell_hittype->at(i) == 0){
+	    //if(CDCcell_hittype->at(i) == 0){
 		count_signal++;
-	    }
+	    //}
 	}
 	if(count_signal>14){
 	    vector<double> CDCcell_pz_sig;
